@@ -4,8 +4,7 @@ import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
-
-import '../../../data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
 
 class HomeScreen extends StatelessWidget {
   @override

@@ -9,9 +9,9 @@ import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/textformfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../../data/model/clicktorun_user.dart';
-import '../../widgets/appbar.dart';
-import '../../widgets/gradient_button.dart';
+import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
+import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
 
 class LoginForm extends StatefulWidget {
   @override

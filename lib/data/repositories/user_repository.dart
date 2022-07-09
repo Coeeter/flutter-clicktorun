@@ -1,7 +1,6 @@
 import 'package:clicktorun_flutter/data/daos/user_dao.dart';
 import 'package:clicktorun_flutter/data/impls/user_dao_impl.dart';
-
-import '../model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
 
 class UserRepository {
   UserRepository._internal();
