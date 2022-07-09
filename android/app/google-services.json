@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "549744202634",
+    "project_id": "flutter-clicktorun",
+    "storage_bucket": "flutter-clicktorun.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549744202634:android:c4abfa91b8fdd29c8aae73",
+        "android_client_info": {
+          "package_name": "com.example.clicktorun_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549744202634-1kip56lvedb7olgamlrivmu3c77e09gi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3kqMbTG0KJcfQTirUkV1z9MOisSPEYys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549744202634-1kip56lvedb7olgamlrivmu3c77e09gi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
