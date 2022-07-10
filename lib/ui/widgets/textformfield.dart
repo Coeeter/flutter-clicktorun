@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
   String text;
+  String? initialValue;
   Icon prefixIcon;
   bool obscureText;
   bool emailCheck;
@@ -23,6 +24,7 @@ class CustomTextFormField extends StatefulWidget {
     this.emailCheck = false,
     this.passwordLengthCheck = false,
     this.doubleCheck = false,
+    this.initialValue,
   });
 
   @override
@@ -33,6 +35,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      obscureText: widget.obscureText,
+      onSaved: widget.onSaved,
+      onChanged: widget.onChanged,
+      initialValue: widget.initialValue,
       decoration: InputDecoration(
         label: Text(widget.text),
         border: const OutlineInputBorder(),
@@ -55,7 +61,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               )
             : null,
       ),
-      obscureText: widget.obscureText,
       validator: (String? value) {
         if (value == null || value.isEmpty) {
           return '${widget.text} required!';
@@ -71,8 +76,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         }
         return widget.customValidators?.call(value);
       },
-      onSaved: widget.onSaved,
-      onChanged: widget.onChanged,
     );
   }
 }

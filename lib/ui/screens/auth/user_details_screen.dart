@@ -1,17 +1,16 @@
 import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
-import 'package:clicktorun_flutter/ui/screens/main/home.dart';
-import 'package:clicktorun_flutter/ui/utils/colors.dart';
+import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
+import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:clicktorun_flutter/ui/widgets/textformfield.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  const UserDetailsScreen({Key? key}) : super(key: key);
-
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
 }
@@ -23,45 +22,44 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   double _weightInKilograms = 0;
   bool isLoading = false;
 
-  void saveForm(BuildContext context) {
+  void saveForm(BuildContext context) async {
     FocusScope.of(context).unfocus();
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       setState(() {
         isLoading = true;
       });
-      Future<bool> insertResults = UserRepository().insertUser(
-        UserModel(
-          username: _username,
-          email: AuthRepository().currentUser!.email!,
-          heightInCentimetres: _heightInCentimetres,
-          weightInKilograms: _weightInKilograms,
-        ),
-      );
-      insertResults.then((value) {
+      try {
+        bool insertResults = await UserRepository().insertUser(
+          UserModel(
+            username: _username,
+            email: AuthRepository().currentUser!.email!,
+            heightInCentimetres: _heightInCentimetres,
+            weightInKilograms: _weightInKilograms,
+          ),
+        );
         setState(() {
           isLoading = false;
         });
-        if (!value) {
+        if (!insertResults) {
           SnackbarUtils(context: context).createSnackbar(
-            'Unkown Error has Occurred',
+            'Unknown Error has Occurred',
           );
         }
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => HomeScreen(),
+            builder: (_) => ParentScreen(),
           ),
         );
-      }).catchError((e) {
+      } catch (e) {
         setState(() {
           isLoading = false;
         });
         SnackbarUtils(context: context).createSnackbar(
-          e.message.toString(),
+          (e as FirebaseException).message.toString(),
         );
-      });
+      }
     }
   }
 
@@ -131,18 +129,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 ),
               ),
             ),
-            if (isLoading)
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).focusColor,
-                ),
-                child: const CircularProgressIndicator(
-                  color: ClickToRunColors.secondary,
-                ),
-              )
+            if (isLoading) LoadingContainer()
           ],
         ),
       ),

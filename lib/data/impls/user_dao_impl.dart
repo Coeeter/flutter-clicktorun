@@ -18,10 +18,7 @@ class UserDaoImpl implements UserDao {
           .collection('users')
           .doc(_firebaseAuth.currentUser!.email)
           .get();
-      if (!document.exists ||
-          !document.data()!.containsKey('username') ||
-          !document.data()!.containsKey('heightInCentimetres') ||
-          !document.data()!.containsKey('weightInKilograms')) return null;
+      if (_docChecker(document)) return null;
       return Future.value(UserModel.fromDocument(
         document,
         document.data()!.containsKey('profileImage'),
@@ -30,6 +27,23 @@ class UserDaoImpl implements UserDao {
       print(e.toString());
       return null;
     }
+  }
+
+  @override
+  Stream<UserModel?> getUserStream() {
+    return _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser!.email)
+        .snapshots()
+        .map(
+      (doc) {
+        if (_docChecker(doc)) return null;
+        return UserModel.fromDocument(
+          doc,
+          doc.data()!.containsKey('profileImage'),
+        );
+      },
+    );
   }
 
   @override
@@ -73,4 +87,10 @@ class UserDaoImpl implements UserDao {
       return Future.value(false);
     }
   }
+
+  bool _docChecker(DocumentSnapshot<Map<String, dynamic>> document) =>
+      !document.exists ||
+      !document.data()!.containsKey('username') ||
+      !document.data()!.containsKey('heightInCentimetres') ||
+      !document.data()!.containsKey('weightInKilograms');
 }

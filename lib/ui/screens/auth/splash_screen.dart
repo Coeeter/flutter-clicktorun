@@ -1,7 +1,8 @@
+import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/user_details_screen.dart';
-import 'package:clicktorun_flutter/ui/screens/main/home.dart';
+import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
@@ -52,9 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
       AnimatedOpacity(
         opacity: _animate ? 1.0 : 0,
         duration: Duration(milliseconds: (_animationLength * 1000) ~/ 2),
-        child: const Text(
+        child: Text(
           'ClickToRun',
-          style: TextStyle(color: Colors.white, fontSize: 40),
+          style: Theme.of(context).textTheme.headline6!.copyWith(
+                fontSize: 50,
+                fontWeight: FontWeight.normal,
+              ),
         ),
       ),
       AnimatedPositioned(
@@ -68,25 +72,20 @@ class _SplashScreenState extends State<SplashScreen> {
           height: mediaQueryData.size.width * 0.8,
         ),
         onEnd: () async {
-          if (AuthRepository().currentUser == null) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => LoginForm()),
-            );
-            return;
-          }
-          if (await UserRepository().getUser() == null) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const UserDetailsScreen(),
-              ),
-            );
-            return;
-          }
+          UserModel? user = await UserRepository().getUser();
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => HomeScreen()),
+            MaterialPageRoute(
+              builder: (_) {
+                if (AuthRepository().currentUser == null) {
+                  return LoginForm();
+                }
+                if (user == null) {
+                  return UserDetailsScreen();
+                }
+                return ParentScreen();
+              },
+            ),
           );
         },
       ),
