@@ -30,7 +30,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         isLoading = true;
       });
       try {
-        bool insertResults = await UserRepository().insertUser(
+        bool insertResults = await UserRepository.instance().insertUser(
           UserModel(
             username: _username,
             email: AuthRepository().currentUser!.email!,

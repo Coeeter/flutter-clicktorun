@@ -17,12 +17,12 @@ class UserModel {
 
   UserModel.fromDocument(
     DocumentSnapshot<Map<String, dynamic>> document,
-    bool hasImage,
+    String? profileImage,
   ) : this(
           username: document["username"] ?? '',
           email: document.id,
           heightInCentimetres: document["heightInCentimetres"] ?? 0.0,
           weightInKilograms: document["weightInKilograms"] ?? 0.0,
-          profileImage: hasImage ? document["profileImage"] : null,
+          profileImage: profileImage,
         );
 }

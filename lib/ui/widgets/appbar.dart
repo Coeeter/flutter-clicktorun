@@ -6,7 +6,10 @@ class ClickToRunAppbar {
   ClickToRunAppbar(this.appbarText);
 
   AppBar getAppBar({List<Widget>? actions}) => AppBar(
-        title: Text(appbarText),
+        title: Text(
+          appbarText,
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: ClickToRunColors.linearGradient,

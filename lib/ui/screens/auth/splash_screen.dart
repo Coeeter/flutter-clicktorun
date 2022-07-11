@@ -72,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
           height: mediaQueryData.size.width * 0.8,
         ),
         onEnd: () async {
-          UserModel? user = await UserRepository().getUser();
+          UserModel? user = await UserRepository.instance().getUser();
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

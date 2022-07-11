@@ -33,6 +33,9 @@ class MyApp extends StatelessWidget {
           ),
           focusColor: ClickToRunColors.lightModeOverlay,
           fontFamily: 'Raleway',
+          bottomSheetTheme: const BottomSheetThemeData(
+            backgroundColor: Colors.transparent,
+          ),
         ),
         darkTheme: ThemeData(
           colorScheme: const ColorScheme(
@@ -50,6 +53,8 @@ class MyApp extends StatelessWidget {
           ),
           focusColor: ClickToRunColors.darkModeOverlay,
           fontFamily: 'Raleway',
+          bottomSheetTheme:
+              const BottomSheetThemeData(backgroundColor: Colors.transparent),
         ),
         home: SplashScreen(),
       ),

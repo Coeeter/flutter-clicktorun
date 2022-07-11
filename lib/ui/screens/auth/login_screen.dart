@@ -37,7 +37,7 @@ class _LoginFormState extends State<LoginForm> {
           _password,
         );
         _formKey.currentState?.reset();
-        UserModel? user = await UserRepository().getUser();
+        UserModel? user = await UserRepository.instance().getUser();
         setState(() {
           isLoading = false;
         });

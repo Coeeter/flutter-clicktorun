@@ -27,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               const SizedBox(height: 20),
               StreamBuilder(
-                stream: UserRepository().getUserStream(),
+                stream: UserRepository.instance().getUserStream(),
                 builder: _builder,
               ),
               const SizedBox(height: 30),
