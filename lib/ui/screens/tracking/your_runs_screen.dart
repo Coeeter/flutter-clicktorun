@@ -1,4 +1,5 @@
 import 'package:clicktorun_flutter/ui/screens/tracking/tracking_screen.dart';
+import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/draggable_fab.dart';
 import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
   }
 
   Widget _getNoRunsToDisplay() {
-    Size size = MediaQuery.of(context).size;
+    Size size = Size(Screen.width, Screen.height);
 
     return Container(
       width: double.infinity,

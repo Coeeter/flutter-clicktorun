@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
+import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
@@ -63,9 +64,6 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
               ? 'Account updated successfully!'
               : 'Unknown error has occurred',
         );
-        if (!updateResults) return;
-        _formKey.currentState!.reset();
-        Navigator.pop(context);
       } catch (e) {
         setState(() {
           _isLoading = false;
@@ -79,7 +77,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.6;
+    double width = Screen.width * 0.6;
     ColorScheme colorScheme = Theme.of(context).colorScheme.copyWith(
           surface: Theme.of(context).brightness == Brightness.dark
               ? const Color(0xFF303030)
@@ -229,7 +227,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
   }
 
   Widget _modalBottomSheedBuilder(BuildContext context) {
-    double height = MediaQuery.of(context).size.height * 0.3 + 10;
+    double height = Screen.height * 0.3 + 10;
     double btnHeight = (height - 30) / 4;
     double radius = 15;
     return Container(

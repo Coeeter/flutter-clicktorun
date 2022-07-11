@@ -3,6 +3,7 @@ import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/edit_profile_screen.dart';
+import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 
@@ -93,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     BuildContext context,
     AsyncSnapshot<UserModel?> userSnapshot,
   ) {
-    Size size = MediaQuery.of(context).size;
+    Size size = Size(Screen.width, Screen.height);
     double side = (size.width - 20) / 5;
     ColorScheme colorScheme = Theme.of(context).colorScheme.copyWith(
           surface: Theme.of(context).brightness == Brightness.dark

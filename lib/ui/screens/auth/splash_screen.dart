@@ -4,6 +4,7 @@ import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/user_details_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
+import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -15,17 +16,24 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool _animate = false;
   final int _animationLength = 1;
+  int animationCount = 0;
 
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
+    Screen.height = mediaQueryData.size.height;
+    Screen.width = mediaQueryData.size.width;
     sleep().then(
-      (_) => setState(() {
-        _animate = true;
-      }),
+      (_) {
+        if (animationCount > 0) return;
+        setState(() {
+          _animate = true;
+          animationCount++;
+        });
+      },
     );
     return Scaffold(
-      body: getBody(mediaQueryData),
+      body: getBody(),
     );
   }
 
@@ -34,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
         () => null,
       );
 
-  Container getBody(MediaQueryData mediaQueryData) {
+  Container getBody() {
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -43,12 +51,12 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       child: Stack(
         alignment: Alignment.center,
-        children: getChildren(mediaQueryData),
+        children: getChildren(),
       ),
     );
   }
 
-  List<Widget> getChildren(MediaQueryData mediaQueryData) {
+  List<Widget> getChildren() {
     return [
       AnimatedOpacity(
         opacity: _animate ? 1.0 : 0,
@@ -64,12 +72,12 @@ class _SplashScreenState extends State<SplashScreen> {
       AnimatedPositioned(
         duration: Duration(seconds: _animationLength),
         left: _animate
-            ? mediaQueryData.size.width
-            : mediaQueryData.size.width * 0.13,
+            ? Screen.width
+            : Screen.width * 0.13,
         child: Image.asset(
           'assets/images/ic_launcher_round_shadow.png',
-          width: mediaQueryData.size.width * 0.8,
-          height: mediaQueryData.size.width * 0.8,
+          width: Screen.width * 0.8,
+          height: Screen.width * 0.8,
         ),
         onEnd: () async {
           UserModel? user = await UserRepository.instance().getUser();
