@@ -86,7 +86,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                         width: double.infinity,
                         height: 250,
                         padding: const EdgeInsets.all(50),
-                        child: Image.asset('images/ic_details_page.png'),
+                        child: Image.asset('assets/images/ic_details_page.png'),
                       ),
                       CustomTextFormField(
                         text: 'Username',

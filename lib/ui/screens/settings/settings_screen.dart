@@ -131,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       "View profile",
                       style: Theme.of(context).textTheme.headline6?.copyWith(
                             color: Theme.of(context).colorScheme.onPrimary,
-                            fontSize: 16,
+                            fontSize: 18,
                           ),
                     ),
                   ],

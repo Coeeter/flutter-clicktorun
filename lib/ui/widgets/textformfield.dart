@@ -40,7 +40,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       onChanged: widget.onChanged,
       initialValue: widget.initialValue,
       decoration: InputDecoration(
-        label: Text(widget.text),
+        label: Text(
+          widget.text,
+          style: const TextStyle(fontFamily: 'Roboto'),
+        ),
         border: const OutlineInputBorder(),
         prefixIcon: IconTheme(
           data: const IconThemeData(color: Colors.grey),

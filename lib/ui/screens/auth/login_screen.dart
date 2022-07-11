@@ -88,7 +88,7 @@ class _LoginFormState extends State<LoginForm> {
                         Container(
                           width: double.infinity,
                           height: 250,
-                          child: Image.asset('images/ic_login_page.png'),
+                          child: Image.asset('assets/images/ic_login_page.png'),
                           padding: const EdgeInsets.all(50),
                         ),
                         CustomTextFormField(

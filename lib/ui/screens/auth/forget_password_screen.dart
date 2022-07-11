@@ -72,7 +72,7 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
                           width: double.infinity,
                           height: 250,
                           child:
-                              Image.asset('images/ic_forget_password_page.png'),
+                              Image.asset('assets/images/ic_forget_password_page.png'),
                           padding: const EdgeInsets.all(50),
                         ),
                         CustomTextFormField(

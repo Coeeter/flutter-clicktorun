@@ -48,7 +48,7 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Image.asset(
-              'images/ic_empty_run_list.png',
+              'assets/images/ic_empty_run_list.png',
               width: size.width - 150,
               height: size.width - 150,
             ),

@@ -1,11 +1,11 @@
 import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
+import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/user_details_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ? mediaQueryData.size.width
             : mediaQueryData.size.width * 0.13,
         child: Image.asset(
-          'images/ic_launcher_round_shadow.png',
+          'assets/images/ic_launcher_round_shadow.png',
           width: mediaQueryData.size.width * 0.8,
           height: mediaQueryData.size.width * 0.8,
         ),
