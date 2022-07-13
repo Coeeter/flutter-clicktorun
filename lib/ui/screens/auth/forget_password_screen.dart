@@ -25,7 +25,7 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
       });
       _formKey.currentState!.save();
       try {
-        await AuthRepository().sendResetLink(_email);
+        await AuthRepository.instance().sendResetLink(_email);
         setState(() {
           isLoading = false;
         });

@@ -1,4 +1,4 @@
-import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: TextButton(
               child: const Text("Sign Out"),
               onPressed: () {
-                AuthRepository().logout();
+                AuthRepository.instance().logout();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (_) => LoginForm()),

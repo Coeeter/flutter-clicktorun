@@ -6,6 +6,7 @@ class GradientButton extends StatelessWidget {
   void Function() onPressed;
   double width;
   ShapeBorder shape;
+  EdgeInsetsGeometry? padding;
 
   GradientButton({
     Key? key,
@@ -13,18 +14,20 @@ class GradientButton extends StatelessWidget {
     required this.onPressed,
     this.width = double.infinity,
     this.shape = const StadiumBorder(),
+    this.padding,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: width,
-      height: 50,
+      padding: padding,
+      height: padding == null ? 50 : 60,
       child: RaisedButton(
         onPressed: onPressed,
         shape: shape,
         padding: const EdgeInsets.all(0.0),
-        splashColor: Theme.of(context).focusColor,
+        splashColor: ClickToRunColors.darkModeOverlay,
         child: Ink(
           decoration: BoxDecoration(
             gradient: ClickToRunColors.linearGradient,
@@ -32,10 +35,17 @@ class GradientButton extends StatelessWidget {
           ),
           child: Container(
             alignment: Alignment.center,
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline6,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+              ],
             ),
           ),
         ),

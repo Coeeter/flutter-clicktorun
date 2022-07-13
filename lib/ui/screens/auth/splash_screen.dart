@@ -1,4 +1,4 @@
-import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
             context,
             MaterialPageRoute(
               builder: (_) {
-                if (AuthRepository().currentUser == null) {
+                if (AuthRepository.instance().currentUser == null) {
                   return LoginForm();
                 }
                 if (user == null) {

@@ -1,4 +1,4 @@
-import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImage extends StatelessWidget {

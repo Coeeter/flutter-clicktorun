@@ -27,14 +27,14 @@ class _RegisterFormState extends State<RegisterForm> {
       });
       _formKey.currentState!.save();
       try {
-        await AuthRepository().register(
+        await AuthRepository.instance().register(
           _email,
           _password,
         );
         setState(() {
           isLoading = false;
         });
-        AuthRepository().logout();
+        AuthRepository.instance().logout();
         SnackbarUtils(context: context).createSnackbar(
           'Account created successfully!',
         );

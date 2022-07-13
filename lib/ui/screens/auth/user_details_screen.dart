@@ -1,4 +1,4 @@
-import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
@@ -33,7 +33,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         bool insertResults = await UserRepository.instance().insertUser(
           UserModel(
             username: _username,
-            email: AuthRepository().currentUser!.email!,
+            email: AuthRepository.instance().currentUser!.email!,
             heightInCentimetres: _heightInCentimetres,
             weightInKilograms: _weightInKilograms,
           ),

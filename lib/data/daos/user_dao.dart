@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
 
 abstract class UserDao {
   Future<UserModel?> getUser();

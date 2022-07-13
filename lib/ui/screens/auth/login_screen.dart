@@ -9,7 +9,7 @@ import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:clicktorun_flutter/ui/widgets/textformfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:clicktorun_flutter/data/model/clicktorun_user.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
 
@@ -32,7 +32,7 @@ class _LoginFormState extends State<LoginForm> {
       });
       _formKey.currentState?.save();
       try {
-        await AuthRepository().login(
+        await AuthRepository.instance().login(
           _email,
           _password,
         );
