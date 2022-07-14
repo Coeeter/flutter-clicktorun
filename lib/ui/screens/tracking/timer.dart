@@ -6,7 +6,7 @@ class TimerText extends StatefulWidget {
     required this.text,
   });
   final _TimerTextState _state = _TimerTextState();
-  void setText(int timeTaken) => _state.setText(timeTaken);
+  void setText(String timeTaken) => _state.setText(timeTaken);
 
   @override
   State<TimerText> createState() => _state;
@@ -33,16 +33,9 @@ class _TimerTextState extends State<TimerText> {
     );
   }
 
-  void setText(int timeTakenInMilliseconds) {
-    int seconds = timeTakenInMilliseconds ~/ 1000 % 60;
-    int minutes = timeTakenInMilliseconds ~/ 1000 ~/ 60 % 60;
-    int hours = timeTakenInMilliseconds ~/ 1000 ~/ 60 ~/ 60;
+  void setText(String timeTaken) {
     setState(() {
-      widget.text =
-          "${_formatTime(hours)}:${_formatTime(minutes)}:${_formatTime(seconds)}";
+      widget.text = timeTaken;
     });
   }
-
-  String _formatTime(int timeValue) =>
-      timeValue < 10 ? "0$timeValue" : timeValue.toString();
 }

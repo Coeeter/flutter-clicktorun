@@ -9,6 +9,7 @@ import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/distance.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/timer.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
+import 'package:clicktorun_flutter/ui/utils/extensions.dart';
 import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
@@ -104,37 +105,39 @@ class _TrackingScreenState extends State<TrackingScreen> {
                   locationIsEnabled.hasData && locationIsEnabled.data!,
                 ),
               ),
-              if (!_takingSnapshot) _controlPanel(),
-              if (_takingSnapshot)
-                SizedBox(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Material(
-                    elevation: 10,
-                    color: Theme.of(context).colorScheme.surface,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        LoadingContainer(
-                          overlayVisibility: false,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          'Do not close the app',
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                        Text(
-                          'Your run is being saved',
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              _takingSnapshot ? _loadingToSaveRun() : _controlPanel(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _loadingToSaveRun() {
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Material(
+        elevation: 10,
+        color: Theme.of(context).colorScheme.surface,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LoadingContainer(
+              overlayVisibility: false,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Do not close the app',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            Text(
+              'Your run is being saved',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          ],
         ),
       ),
     );
@@ -150,6 +153,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
       const Duration(milliseconds: 100),
       null,
     );
+    _location.enableBackgroundMode(enable: false);
     _controller?.moveCamera(
       CameraUpdate.newLatLngBounds(
         _getBounds(_runRoute),
@@ -231,6 +235,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
               setState(() {
                 _isTracking = false;
               });
+              _location.enableBackgroundMode(enable: false);
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
@@ -288,8 +293,21 @@ class _TrackingScreenState extends State<TrackingScreen> {
       }
       if (!_isTracking) return;
       _startTimer();
+      _location.enableBackgroundMode();
+      _setUpNotification();
       _runRoute.add([]);
     });
+  }
+
+  void _setUpNotification([
+    String subtitle = "00:00:00",
+  ]) {
+    _location.changeNotificationOptions(
+      title: 'Tracking your run',
+      iconName: 'ic_shoes',
+      subtitle: subtitle,
+      onTapBringToFront: true,
+    );
   }
 
   Widget _handlePermission(bool permissionGranted) {
@@ -374,7 +392,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
       (timer) {
         if (!_isTracking) return timer.cancel();
         _timeTakenInMilliseconds += 1000;
-        _timerTextView.setText(_timeTakenInMilliseconds);
+        _timerTextView.setText(_timeTakenInMilliseconds.toTimeString());
+        _setUpNotification(_timeTakenInMilliseconds.toTimeString());
       },
     );
   }

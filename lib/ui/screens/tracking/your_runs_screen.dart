@@ -50,6 +50,7 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
       return _getNoRunsToDisplay();
     }
     return ListView(
+      physics: const BouncingScrollPhysics(),
       children: snapshot.data!.map((runModel) {
         return _getListItem(runModel);
       }).toList(),
@@ -69,8 +70,8 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
               height: (Screen.width - 20) / 2,
               child: Stack(
                 children: [
-                  const Center(
-                    child: CircularProgressIndicator(),
+                  Center(
+                    child: LoadingContainer(overlayVisibility: false),
                   ),
                   Image.network(
                     Theme.of(context).brightness == Brightness.dark
@@ -113,9 +114,12 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
   }
 
   String _formatTime(int timeTaken) {
-    int seconds = timeTaken ~/ 1000 % 60;
-    int minutes = timeTaken ~/ 1000 ~/ 60 % 60;
-    int hours = timeTaken ~/ 1000 ~/ 60 ~/ 60;
+    String seconds = (timeTaken ~/ 1000 % 60).toString();
+    String minutes = (timeTaken ~/ 1000 ~/ 60 % 60).toString();
+    String hours = (timeTaken ~/ 1000 ~/ 60 ~/ 60).toString();
+    if (seconds.length < 2) seconds = '0$seconds';
+    if (minutes.length < 2) minutes = '0$minutes';
+    if (hours.length < 2) hours = '0$hours';
     return '$hours:$minutes:$seconds';
   }
 
@@ -133,7 +137,7 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
           Text(
             unit,
             style: Theme.of(context).textTheme.headline6?.copyWith(
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
           ),
         ],
