@@ -22,30 +22,11 @@ class RunDaoImpl implements RunDao {
         .where('email', isEqualTo: email)
         .orderBy('timeStarted')
         .snapshots()
-        .asyncMap(
-          (snapshot) async => await _convertToList(snapshot),
+        .map(
+          (snapshot) => snapshot.docs
+              .map((document) => RunModel.fromMap(document))
+              .toList(),
         );
-  }
-
-  Future<List<RunModel>> _convertToList(
-    QuerySnapshot<Map<String, dynamic>> querySnapshot,
-  ) async {
-    List<DocumentSnapshot<Map<String, dynamic>>> docList = querySnapshot.docs;
-    List<RunModel> runList = [];
-    for (var document in docList) {
-      runList.add(
-        RunModel.fromMap(
-          document,
-          await _getDownloadUrl(document["darkModeImage"]),
-          await _getDownloadUrl(document["lightModeImage"]),
-        ),
-      );
-    }
-    return runList;
-  }
-
-  Future<String> _getDownloadUrl(String child) async {
-    return await _reference.child(child).getDownloadURL();
   }
 
   @override
@@ -88,13 +69,15 @@ class RunDaoImpl implements RunDao {
   Future<bool> deleteRun(String id) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> document =
-          await _firestore.collection('users').doc(id).get();
+          await _firestore.collection('runs').doc(id).get();
       await _reference.child(document["lightModeImage"]).delete();
       await _reference.child(document["darkModeImage"]).delete();
-      await _firestore.collection('users').doc(id).delete();
+      await _firestore.collection('runs').doc(id).delete();
       return true;
     } catch (e) {
-      print((e as FirebaseException).message.toString());
+      print(e);
+      if (e is! FirebaseException) return false;
+      print(e.message.toString());
       return false;
     }
   }

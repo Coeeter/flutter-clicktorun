@@ -18,12 +18,10 @@ class RunModel {
 
   RunModel.fromMap(
     DocumentSnapshot<Map<String, dynamic>> document,
-    String darkModeImage,
-    String lightModeImage,
   ) : this(
           id: document.id,
-          darkModeImage: darkModeImage,
-          lightModeImage: lightModeImage,
+          darkModeImage: document["darkModeImage"],
+          lightModeImage: document["lightModeImage"],
           email: document["email"],
           timeStartedInMilliseconds: document["timeStarted"],
           timeTakenInMilliseconds: document["timeTaken"],

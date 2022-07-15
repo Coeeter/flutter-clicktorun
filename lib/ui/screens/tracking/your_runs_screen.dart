@@ -1,11 +1,15 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
+import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/tracking_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
+import 'package:clicktorun_flutter/ui/utils/colors.dart';
+import 'package:clicktorun_flutter/ui/utils/extensions.dart';
 import 'package:clicktorun_flutter/ui/widgets/draggable_fab.dart';
 import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class YourRunsScreen extends StatefulWidget {
   @override
@@ -14,18 +18,20 @@ class YourRunsScreen extends StatefulWidget {
 
 class _YourRunsScreenState extends State<YourRunsScreen> {
   final GlobalKey _parentKey = GlobalKey();
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       key: _parentKey,
       children: [
-        StreamBuilder<List<RunModel>>(
-          stream: RunRepository.instance().getRunList(
-            AuthRepository.instance().currentUser!.email!,
+        if (!_isLoading)
+          StreamBuilder<List<RunModel>>(
+            stream: RunRepository.instance().getRunList(
+              AuthRepository.instance().currentUser!.email!,
+            ),
+            builder: _builder,
           ),
-          builder: _builder,
-        ),
         DraggableFloatingActionButton(
           parentKey: _parentKey,
           onPressed: () => Navigator.pushReplacement(
@@ -35,12 +41,23 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
             ),
           ),
         ),
+        if (_isLoading)
+          Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: ClickToRunColors.secondary,
+              ),
+            ),
+          ),
       ],
     );
   }
 
   Widget _builder(
-      BuildContext context, AsyncSnapshot<List<RunModel>> snapshot) {
+    BuildContext context,
+    AsyncSnapshot<List<RunModel>> snapshot,
+  ) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return LoadingContainer(
         overlayVisibility: false,
@@ -51,76 +68,126 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
     }
     return ListView(
       physics: const BouncingScrollPhysics(),
-      children: snapshot.data!.map((runModel) {
-        return _getListItem(runModel);
+      children: snapshot.data!.map((RunModel runModel) {
+        return _getListItem(
+          context,
+          runModel,
+        );
       }).toList(),
     );
   }
 
-  Widget _getListItem(RunModel runModel) {
-    return Container(
-      width: double.infinity,
+  Widget _getListItem(BuildContext context, RunModel runModel) {
+    return Padding(
       padding: const EdgeInsets.all(10),
-      child: Material(
-        elevation: 10,
-        child: Column(
+      child: Slidable(
+        key: ValueKey(runModel.id),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
+          dismissible: DismissiblePane(
+            onDismissed: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await RunRepository.instance().deleteRun(runModel.id);
+              setState(() {
+                _isLoading = false;
+              });
+            },
+          ),
           children: [
-            SizedBox(
-              width: Screen.width - 20,
-              height: (Screen.width - 20) / 2,
-              child: Stack(
-                children: [
-                  Center(
-                    child: LoadingContainer(overlayVisibility: false),
-                  ),
-                  Image.network(
+            SlidableAction(
+              onPressed: (_) async {
+                setState(() {
+                  _isLoading = true;
+                });
+                await RunRepository.instance().deleteRun(runModel.id);
+                setState(() {
+                  _isLoading = false;
+                });
+              },
+              icon: Icons.delete,
+              label: 'Delete run',
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            )
+          ],
+        ),
+        child: Material(
+          elevation: 10,
+          child: Column(
+            children: [
+              SizedBox(
+                width: Screen.width - 20,
+                height: (Screen.width - 20) / 2,
+                child: FutureBuilder<String>(
+                  future: StorageRepository.instance().getDownloadUrl(
                     Theme.of(context).brightness == Brightness.dark
                         ? runModel.darkModeImage
                         : runModel.lightModeImage,
                   ),
-                ],
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: LoadingContainer(overlayVisibility: false),
+                      );
+                    }
+                    return Image.network(
+                      snapshot.data!,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        if (loadingProgress.expectedTotalBytes == null) {
+                          return Center(
+                            child: LoadingContainer(overlayVisibility: false),
+                          );
+                        }
+                        double percentLoaded = 1.0 *
+                            (loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!);
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(
+                            value: percentLoaded,
+                            color: ClickToRunColors.secondary,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _getValue(
-                    context,
-                    (runModel.distanceRanInMetres > 1000
-                            ? runModel.distanceRanInMetres / 1000
-                            : runModel.distanceRanInMetres.toInt())
-                        .toString(),
-                    runModel.distanceRanInMetres > 1000 ? 'km' : 'm',
-                  ),
-                  _getValue(
-                    context,
-                    _formatTime(runModel.timeTakenInMilliseconds),
-                    'Time',
-                  ),
-                  _getValue(
-                    context,
-                    runModel.averageSpeed.toStringAsFixed(2),
-                    'km/h',
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _getValue(
+                      context,
+                      (runModel.distanceRanInMetres > 1000
+                              ? runModel.distanceRanInMetres / 1000
+                              : runModel.distanceRanInMetres.toInt())
+                          .toString(),
+                      runModel.distanceRanInMetres > 1000 ? 'km' : 'm',
+                    ),
+                    _getValue(
+                      context,
+                      runModel.timeTakenInMilliseconds.toTimeString(),
+                      'Time',
+                    ),
+                    _getValue(
+                      context,
+                      runModel.averageSpeed.toStringAsFixed(2),
+                      'km/h',
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  String _formatTime(int timeTaken) {
-    String seconds = (timeTaken ~/ 1000 % 60).toString();
-    String minutes = (timeTaken ~/ 1000 ~/ 60 % 60).toString();
-    String hours = (timeTaken ~/ 1000 ~/ 60 ~/ 60).toString();
-    if (seconds.length < 2) seconds = '0$seconds';
-    if (minutes.length < 2) minutes = '0$minutes';
-    if (hours.length < 2) hours = '0$hours';
-    return '$hours:$minutes:$seconds';
   }
 
   Widget _getValue(BuildContext context, String value, String unit) {

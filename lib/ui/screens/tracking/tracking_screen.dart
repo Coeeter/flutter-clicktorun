@@ -144,13 +144,13 @@ class _TrackingScreenState extends State<TrackingScreen> {
   }
 
   void _saveRun() async {
-    if (_runRoute.isEmpty || _runRoute[0].length < 2) return;
+    if (_runRoute.isEmpty || _runRoute[0].length < 2 || _takingSnapshot) return;
     setState(() {
       _isTracking = false;
       _takingSnapshot = true;
     });
     await Future.delayed(
-      const Duration(milliseconds: 100),
+      const Duration(milliseconds: 200),
       null,
     );
     _location.enableBackgroundMode(enable: false);
@@ -162,13 +162,13 @@ class _TrackingScreenState extends State<TrackingScreen> {
     );
     _controller?.setMapStyle(lightMode);
     await Future.delayed(
-      const Duration(milliseconds: 300),
+      const Duration(milliseconds: 500),
       null,
     );
     Uint8List? lightModeImage = await _controller?.takeSnapshot();
     _controller?.setMapStyle(darkMode);
     await Future.delayed(
-      const Duration(milliseconds: 300),
+      const Duration(milliseconds: 500),
       null,
     );
     Uint8List? darkModeImage = await _controller?.takeSnapshot();
@@ -209,6 +209,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
   }
 
   void _closeRun(BuildContext context) {
+    if (_takingSnapshot) return;
     if (_isFirstTimeTracking) {
       Navigator.pushReplacement(
         context,
@@ -358,7 +359,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: _runRoute.last.last,
-            zoom: 18,
+            zoom: 18.5,
           ),
         ),
       );
