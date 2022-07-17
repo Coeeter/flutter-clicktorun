@@ -2,6 +2,7 @@ import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
+import 'package:clicktorun_flutter/ui/screens/settings/delete_account_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/edit_profile_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/profile_image.dart';
@@ -33,12 +34,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const SizedBox(height: 30),
               _settingsItem(
-                  title: "Edit Account",
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => EditUserDetailsScreen(),
-                    ));
-                  }),
+                title: "Edit Account",
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => EditUserDetailsScreen(),
+                  ));
+                },
+              ),
+              _settingsItem(
+                title: "Delete Account",
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => DeleteAccountScreen(),
+                  ));
+                },
+              ),
             ],
           ),
           Container(

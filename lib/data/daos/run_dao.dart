@@ -11,4 +11,5 @@ abstract class RunDao {
   );
   Future<bool> updateRun(String id, Map<String, dynamic> updateValues);
   Future<bool> deleteRun(String id);
+  Future<bool> deleteAllRuns(String email);
 }

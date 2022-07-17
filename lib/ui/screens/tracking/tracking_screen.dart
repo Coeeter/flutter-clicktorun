@@ -6,8 +6,8 @@ import 'package:clicktorun_flutter/data/model/run_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/distance.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/timer.dart';
+import 'package:clicktorun_flutter/ui/screens/tracking/widgets/distance.dart';
+import 'package:clicktorun_flutter/ui/screens/tracking/widgets/timer.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:clicktorun_flutter/ui/utils/extensions.dart';
 import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
@@ -149,10 +149,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
       _isTracking = false;
       _takingSnapshot = true;
     });
-    await Future.delayed(
-      const Duration(milliseconds: 200),
-      null,
-    );
+
+    await Future.delayed(const Duration(milliseconds: 200));
     _location.enableBackgroundMode(enable: false);
     _controller?.moveCamera(
       CameraUpdate.newLatLngBounds(
@@ -160,22 +158,17 @@ class _TrackingScreenState extends State<TrackingScreen> {
         MediaQuery.of(context).size.width * 0.05,
       ),
     );
+
     _controller?.setMapStyle(lightMode);
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-      null,
-    );
+    await Future.delayed(const Duration(milliseconds: 500));
     Uint8List? lightModeImage = await _controller?.takeSnapshot();
+
     _controller?.setMapStyle(darkMode);
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-      null,
-    );
+    await Future.delayed(const Duration(milliseconds: 500));
     Uint8List? darkModeImage = await _controller?.takeSnapshot();
 
     String lightModeImageName = "maps/light-${const Uuid().v4()}";
     String darkModeImageName = "maps/dark-${const Uuid().v4()}";
-
     double averageSpeed = (_distanceText.distanceRanInMetres / 1000) /
         (_timeTakenInMilliseconds / 1000 / 60 / 60);
     RunModel runModel = RunModel(
@@ -189,23 +182,20 @@ class _TrackingScreenState extends State<TrackingScreen> {
       averageSpeed: averageSpeed,
     );
 
-    bool results = await RunRepository.instance().insertRun(
+    await RunRepository.instance().insertRun(
       runModel,
       lightModeImage!,
       darkModeImage!,
-    );
-
-    if (!results) {
-      return SnackbarUtils(context: context).createSnackbar(
-        'Unknown error has occurred',
-      );
-    }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ParentScreen(),
-      ),
-    );
+    )
+        ? Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ParentScreen(),
+            ),
+          )
+        : SnackbarUtils(context: context).createSnackbar(
+            'Unknown error has occurred',
+          );
   }
 
   void _closeRun(BuildContext context) {

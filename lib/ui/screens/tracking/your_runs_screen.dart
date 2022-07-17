@@ -6,7 +6,7 @@ import 'package:clicktorun_flutter/ui/screens/tracking/tracking_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:clicktorun_flutter/ui/utils/extensions.dart';
-import 'package:clicktorun_flutter/ui/widgets/draggable_fab.dart';
+import 'package:clicktorun_flutter/ui/screens/tracking/widgets/draggable_fab.dart';
 import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

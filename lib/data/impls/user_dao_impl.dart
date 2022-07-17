@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:clicktorun_flutter/data/daos/user_dao.dart';
 import 'package:clicktorun_flutter/data/model/user_model.dart';
+import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -74,7 +75,8 @@ class UserDaoImpl implements UserDao {
   ) async {
     try {
       if (profileImage != null) {
-        String fileName = const Uuid().v4();
+        String fileName =
+            "profile/${_firebaseAuth.currentUser!.email!}-${const Uuid().v4()}";
         await _reference.child(fileName).putFile(profileImage);
         map["profileImage"] = fileName;
         var doc = await _firestore
@@ -99,6 +101,7 @@ class UserDaoImpl implements UserDao {
   @override
   Future<bool> deleteUser() async {
     try {
+      RunRepository.instance().deleteAllRuns(_firebaseAuth.currentUser!.email!);
       await _firestore
           .collection('users')
           .doc(_firebaseAuth.currentUser!.email)

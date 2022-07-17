@@ -69,68 +69,75 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: ClickToRunAppbar("Setting up your profile").getAppBar(),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 20,
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 250,
-                        padding: const EdgeInsets.all(50),
-                        child: Image.asset('assets/images/ic_details_page.png'),
-                      ),
-                      CustomTextFormField(
-                        text: 'Username',
-                        prefixIcon: const Icon(Icons.person),
-                        onSaved: (String? value) {
-                          _username = value!;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      CustomTextFormField(
-                        text: 'Weight in kg',
-                        prefixIcon: const Icon(Icons.monitor_weight),
-                        doubleCheck: true,
-                        onSaved: (String? value) {
-                          _weightInKilograms = double.parse(value!);
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      CustomTextFormField(
-                        text: 'Height in cm',
-                        prefixIcon: const Icon(Icons.height),
-                        doubleCheck: true,
-                        onSaved: (String? value) {
-                          _heightInCentimetres = double.parse(value!);
-                        },
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      GradientButton(
-                        text: 'Submit',
-                        onPressed: () => saveForm(context),
-                      ),
-                    ],
+        body: Container(
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+          ),
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 20,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 250,
+                          padding: const EdgeInsets.all(50),
+                          child:
+                              Image.asset('assets/images/ic_details_page.png'),
+                        ),
+                        CustomTextFormField(
+                          text: 'Username',
+                          prefixIcon: const Icon(Icons.person),
+                          onSaved: (String? value) {
+                            _username = value!;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextFormField(
+                          text: 'Weight in kg',
+                          prefixIcon: const Icon(Icons.monitor_weight),
+                          doubleCheck: true,
+                          onSaved: (String? value) {
+                            _weightInKilograms = double.parse(value!);
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CustomTextFormField(
+                          text: 'Height in cm',
+                          prefixIcon: const Icon(Icons.height),
+                          doubleCheck: true,
+                          onSaved: (String? value) {
+                            _heightInCentimetres = double.parse(value!);
+                          },
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        GradientButton(
+                          text: 'Submit',
+                          onPressed: () => saveForm(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            if (isLoading) LoadingContainer()
-          ],
+              if (isLoading) LoadingContainer()
+            ],
+          ),
         ),
       ),
     );

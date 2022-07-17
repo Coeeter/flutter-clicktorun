@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:clicktorun_flutter/data/daos/run_dao.dart';
@@ -78,6 +79,25 @@ class RunDaoImpl implements RunDao {
       print(e);
       if (e is! FirebaseException) return false;
       print(e.message.toString());
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> deleteAllRuns(String email) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> allRuns = await _firestore
+          .collection('runs')
+          .where('email', isEqualTo: email)
+          .get();
+      WriteBatch batch = _firestore.batch();
+      for (var doc in allRuns.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      print(e.toString());
       return false;
     }
   }

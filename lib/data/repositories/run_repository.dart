@@ -30,4 +30,8 @@ class RunRepository {
   Future<bool> deleteRun(String id) {
     return _runDao.deleteRun(id);
   }
+
+  Future<bool> deleteAllRuns(String email) {
+    return _runDao.deleteAllRuns(email);
+  }
 }
