@@ -85,7 +85,11 @@ class _ParentScreenState extends State<ParentScreen> {
               children: [
                 IconButton(
                   onPressed: () async {
+                    if (_runsKey.currentState?.selectedRuns.isEmpty == true) {
+                      return;
+                    }
                     setState(() {
+                      _runsKey.currentState?.isSelectable = false;
                       _runsKey.currentState?.isLoading = true;
                     });
                     bool deleteResults =
@@ -94,15 +98,12 @@ class _ParentScreenState extends State<ParentScreen> {
                     );
                     setState(() {
                       _runsKey.currentState?.isLoading = false;
-                    });
-                    if (!deleteResults) {
-                      return SnackbarUtils(context: context)
-                          .createSnackbar('Unknown error has occurred');
-                    }
-                    setState(() {
-                      _runsKey.currentState?.isSelectable = false;
                       _runsKey.currentState?.selectedRuns.clear();
                     });
+                    if (!deleteResults) {
+                      SnackbarUtils(context: context)
+                          .createSnackbar('Unknown error has occurred');
+                    }
                   },
                   icon: const Icon(Icons.delete),
                 ),

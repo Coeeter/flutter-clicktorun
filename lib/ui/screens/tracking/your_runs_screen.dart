@@ -92,6 +92,7 @@ class YourRunsScreenState extends State<YourRunsScreen> {
         widget.refresh();
       },
       onTap: () {
+        if (!isSelectable) return;
         setState(() {
           selectedRuns.contains(runModel.id)
               ? selectedRuns.remove(runModel.id)
@@ -185,9 +186,7 @@ class YourRunsScreenState extends State<YourRunsScreen> {
             }
             double percentLoaded = (loadingProgress.cumulativeBytesLoaded /
                 loadingProgress.expectedTotalBytes!);
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              alignment: Alignment.center,
+            return Center(
               child: CircularProgressIndicator(
                 value: percentLoaded,
                 color: ClickToRunColors.secondary,
