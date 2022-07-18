@@ -114,12 +114,15 @@ class _LoginFormState extends State<LoginForm> {
                         Container(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ForgetPasswordForm(),
-                              ),
-                            ),
+                            onPressed: () {
+                              _formKey.currentState!.reset();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ForgetPasswordForm(),
+                                ),
+                              );
+                            },
                             child: Text(
                               'Forget Password?',
                               style: Theme.of(context).textTheme.bodyMedium,
@@ -140,11 +143,15 @@ class _LoginFormState extends State<LoginForm> {
                             "Don't have an account? Create one here!",
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => RegisterForm(),
-                            ),
-                          ),
+                          onPressed: () {
+                            _formKey.currentState!.reset();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    RegisterForm(),
+                              ),
+                            );
+                          },
                           style: TextButton.styleFrom(
                             splashFactory: NoSplash.splashFactory,
                           ),

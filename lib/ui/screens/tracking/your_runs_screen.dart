@@ -5,27 +5,32 @@ import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/tracking_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
-import 'package:clicktorun_flutter/ui/utils/extensions.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/widgets/draggable_fab.dart';
+import 'package:clicktorun_flutter/ui/utils/extensions.dart';
 import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class YourRunsScreen extends StatefulWidget {
+  void Function() refresh;
+  YourRunsScreen({required Key key, required this.refresh}) : super(key: key);
+
   @override
-  State<YourRunsScreen> createState() => _YourRunsScreenState();
+  State<YourRunsScreen> createState() => YourRunsScreenState();
 }
 
-class _YourRunsScreenState extends State<YourRunsScreen> {
+class YourRunsScreenState extends State<YourRunsScreen> {
+  bool isSelectable = false;
   final GlobalKey _parentKey = GlobalKey();
-  bool _isLoading = false;
+  bool isLoading = false;
+  List<String> selectedRuns = [];
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       key: _parentKey,
       children: [
-        if (!_isLoading)
+        if (!isLoading)
           StreamBuilder<List<RunModel>>(
             stream: RunRepository.instance().getRunList(
               AuthRepository.instance().currentUser!.email!,
@@ -41,7 +46,7 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
             ),
           ),
         ),
-        if (_isLoading)
+        if (isLoading)
           Container(
             color: Theme.of(context).colorScheme.surface,
             child: const Center(
@@ -78,114 +83,147 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
   }
 
   Widget _getListItem(BuildContext context, RunModel runModel) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Slidable(
-        key: ValueKey(runModel.id),
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          dismissible: DismissiblePane(
-            onDismissed: () async {
-              setState(() {
-                _isLoading = true;
-              });
-              await RunRepository.instance().deleteRun(runModel.id);
-              setState(() {
-                _isLoading = false;
-              });
-            },
-          ),
-          children: [
-            SlidableAction(
-              onPressed: (_) async {
-                setState(() {
-                  _isLoading = true;
-                });
-                await RunRepository.instance().deleteRun(runModel.id);
-                setState(() {
-                  _isLoading = false;
-                });
-              },
-              icon: Icons.delete,
-              label: 'Delete run',
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            )
-          ],
-        ),
-        child: Material(
-          elevation: 10,
-          child: Column(
+    return GestureDetector(
+      onLongPress: () {
+        setState(() {
+          isSelectable = true;
+          selectedRuns.add(runModel.id);
+        });
+        widget.refresh();
+      },
+      onTap: () {
+        setState(() {
+          selectedRuns.contains(runModel.id)
+              ? selectedRuns.remove(runModel.id)
+              : selectedRuns.add(runModel.id);
+        });
+        widget.refresh();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Slidable(
+          key: ValueKey(runModel.id),
+          endActionPane: isSelectable ? null : _getActionPane(runModel),
+          child: Stack(
             children: [
-              SizedBox(
-                width: Screen.width - 20,
-                height: (Screen.width - 20) / 2,
-                child: FutureBuilder<String>(
-                  future: StorageRepository.instance().getDownloadUrl(
-                    Theme.of(context).brightness == Brightness.dark
-                        ? runModel.darkModeImage
-                        : runModel.lightModeImage,
-                  ),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: LoadingContainer(overlayVisibility: false),
-                      );
-                    }
-                    return Image.network(
-                      snapshot.data!,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        if (loadingProgress.expectedTotalBytes == null) {
-                          return Center(
-                            child: LoadingContainer(overlayVisibility: false),
-                          );
-                        }
-                        double percentLoaded = 1.0 *
-                            (loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!);
-                        return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                            value: percentLoaded,
-                            color: ClickToRunColors.secondary,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Material(
+                elevation: 10,
+                child: Column(
                   children: [
-                    _getValue(
-                      context,
-                      (runModel.distanceRanInMetres > 1000
-                              ? runModel.distanceRanInMetres / 1000
-                              : runModel.distanceRanInMetres.toInt())
-                          .toString(),
-                      runModel.distanceRanInMetres > 1000 ? 'km' : 'm',
+                    SizedBox(
+                      width: Screen.width - 20,
+                      height: (Screen.width - 20) / 2,
+                      child: _getImage(runModel),
                     ),
-                    _getValue(
-                      context,
-                      runModel.timeTakenInMilliseconds.toTimeString(),
-                      'Time',
-                    ),
-                    _getValue(
-                      context,
-                      runModel.averageSpeed.toStringAsFixed(2),
-                      'km/h',
-                    ),
+                    _getDetailsRow(runModel),
                   ],
                 ),
               ),
+              _getOverlay(runModel.id),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  ActionPane _getActionPane(RunModel runModel) {
+    return ActionPane(
+      motion: const ScrollMotion(),
+      dismissible: DismissiblePane(
+        onDismissed: () async {
+          setState(() {
+            isLoading = true;
+          });
+          await RunRepository.instance().deleteRun([runModel.id]);
+          setState(() {
+            isLoading = false;
+          });
+        },
+      ),
+      children: [
+        SlidableAction(
+          onPressed: (_) async {
+            setState(() {
+              isLoading = true;
+            });
+            await RunRepository.instance().deleteRun([runModel.id]);
+            setState(() {
+              isLoading = false;
+            });
+          },
+          icon: Icons.delete,
+          label: 'Delete run',
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+        )
+      ],
+    );
+  }
+
+  Widget _getImage(RunModel runModel) {
+    return FutureBuilder<String>(
+      future: StorageRepository.instance().getDownloadUrl(
+        Theme.of(context).brightness == Brightness.dark
+            ? runModel.darkModeImage
+            : runModel.lightModeImage,
+      ),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: LoadingContainer(overlayVisibility: false),
+          );
+        }
+        return Image.network(
+          snapshot.data!,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            if (loadingProgress.expectedTotalBytes == null) {
+              return Center(
+                child: LoadingContainer(overlayVisibility: false),
+              );
+            }
+            double percentLoaded = (loadingProgress.cumulativeBytesLoaded /
+                loadingProgress.expectedTotalBytes!);
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(
+                value: percentLoaded,
+                color: ClickToRunColors.secondary,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _getDetailsRow(RunModel runModel) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _getValue(
+            context,
+            (runModel.distanceRanInMetres > 1000
+                    ? runModel.distanceRanInMetres / 1000
+                    : runModel.distanceRanInMetres.toInt())
+                .toString(),
+            runModel.distanceRanInMetres > 1000 ? 'km' : 'm',
+          ),
+          _getValue(
+            context,
+            runModel.timeTakenInMilliseconds.toTimeString(),
+            'Time',
+          ),
+          _getValue(
+            context,
+            runModel.averageSpeed.toStringAsFixed(2),
+            'km/h',
+          ),
+        ],
       ),
     );
   }
@@ -208,6 +246,23 @@ class _YourRunsScreenState extends State<YourRunsScreen> {
                 ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _getOverlay(String id) {
+    return Visibility(
+      visible: selectedRuns.contains(id),
+      child: Container(
+        alignment: Alignment.topRight,
+        padding: const EdgeInsets.all(5),
+        height: (Screen.width - 20) / 2 + 60,
+        color: Theme.of(context).focusColor,
+        child: const Icon(
+          Icons.check_box,
+          color: ClickToRunColors.secondary,
+          size: 50,
+        ),
       ),
     );
   }

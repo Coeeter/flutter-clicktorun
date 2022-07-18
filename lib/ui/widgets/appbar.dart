@@ -8,7 +8,10 @@ class ClickToRunAppbar {
   AppBar getAppBar({List<Widget>? actions}) => AppBar(
         title: Text(
           appbarText,
-          style: const TextStyle(fontWeight: FontWeight.w700),
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Roboto',
+          ),
         ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(

@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:clicktorun_flutter/data/daos/run_dao.dart';
@@ -67,13 +66,17 @@ class RunDaoImpl implements RunDao {
   }
 
   @override
-  Future<bool> deleteRun(String id) async {
+  Future<bool> deleteRun(List<String> idList) async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> document =
-          await _firestore.collection('runs').doc(id).get();
-      await _reference.child(document["lightModeImage"]).delete();
-      await _reference.child(document["darkModeImage"]).delete();
-      await _firestore.collection('runs').doc(id).delete();
+      WriteBatch batch = _firestore.batch();
+      for (String id in idList) {
+        DocumentSnapshot<Map<String, dynamic>> document =
+            await _firestore.collection('runs').doc(id).get();
+        await _reference.child(document["lightModeImage"]).delete();
+        await _reference.child(document["darkModeImage"]).delete();
+        batch.delete(document.reference);
+      }
+      await batch.commit();
       return true;
     } catch (e) {
       print(e);

@@ -10,6 +10,6 @@ abstract class RunDao {
     Uint8List darkModeImage,
   );
   Future<bool> updateRun(String id, Map<String, dynamic> updateValues);
-  Future<bool> deleteRun(String id);
+  Future<bool> deleteRun(List<String> idList);
   Future<bool> deleteAllRuns(String email);
 }

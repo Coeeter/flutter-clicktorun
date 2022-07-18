@@ -93,8 +93,11 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
             stream: UserRepository.instance().getUserStream(),
             builder: (context, snapshot) {
               if (!snapshot.hasData || _isUploading) {
-                return LoadingContainer(
-                  overlayVisibility: false,
+                return Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: LoadingContainer(
+                    overlayVisibility: false,
+                  ),
                 );
               }
               if (snapshot.hasData) {
