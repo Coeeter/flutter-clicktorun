@@ -1,6 +1,4 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
-import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
-import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/widgets/runs_list_view.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
@@ -46,6 +44,7 @@ class RunsListItemState extends State<RunsListItem> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey globalKey = GlobalKey();
     return Padding(
       padding: const EdgeInsets.all(10),
       child: GestureDetector(
@@ -60,23 +59,26 @@ class RunsListItemState extends State<RunsListItem> {
           key: ValueKey(widget.runModel.id),
           endActionPane:
               widget.isSelectable ? null : _getActionPane(widget.runModel),
-          child: Stack(
-            children: [
-              Material(
-                elevation: 10,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: Screen.width - 20,
-                      height: (Screen.width - 20) / 2,
-                      child: _getImage(widget.runModel),
-                    ),
-                    _getDetailsRow(widget.runModel),
-                  ],
+          child: IntrinsicHeight(
+            child: Stack(
+              children: [
+                Material(
+                  key: globalKey,
+                  elevation: 10,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: Screen.width - 20,
+                        height: (Screen.width - 20) / 2,
+                        child: _getImage(widget.runModel),
+                      ),
+                      _getDetailsRow(widget.runModel),
+                    ],
+                  ),
                 ),
-              ),
-              _getOverlay(widget.runModel.id),
-            ],
+                _getOverlay(widget.runModel.id),
+              ],
+            ),
           ),
         ),
       ),
@@ -182,7 +184,6 @@ class RunsListItemState extends State<RunsListItem> {
       child: Container(
         alignment: Alignment.topRight,
         padding: const EdgeInsets.all(5),
-        height: (Screen.width - 20) / 2 + 60,
         color: Theme.of(context).focusColor,
         child: const Icon(
           Icons.check_box,
