@@ -49,7 +49,7 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: ClickToRunAppbar("Forgot password?").getAppBar(),
+        appBar: CustomAppbar(title: "Forgot password?"),
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(

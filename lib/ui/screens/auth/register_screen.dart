@@ -56,7 +56,7 @@ class _RegisterFormState extends State<RegisterForm> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: ClickToRunAppbar("Register to ClickToRun").getAppBar(),
+        appBar: CustomAppbar(title: "Register to ClickToRun"),
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(

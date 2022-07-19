@@ -1,7 +1,5 @@
-import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/settings_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/your_runs_screen.dart';
-import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,12 +11,15 @@ class ParentScreen extends StatefulWidget {
 
 class _ParentScreenState extends State<ParentScreen> {
   final GlobalKey<YourRunsScreenState> _runsKey = GlobalKey();
+  final GlobalKey<CustomAppbarState> _appbarKey = GlobalKey();
   int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ClickToRunAppbar(_getTitle(currentIndex)).getAppBar(
+      appBar: CustomAppbar(
+        key: _appbarKey,
+        title: _getTitle(currentIndex),
         actions: _getActions(
           context,
           currentIndex,
@@ -62,7 +63,8 @@ class _ParentScreenState extends State<ParentScreen> {
   Widget? _getCurrentScreen(int index) => [
         YourRunsScreen(
           key: _runsKey,
-          refresh: () => setState(() {}),
+          appbarKey: _appbarKey,
+          refreshParent: () => setState(() {}),
         ),
         null,
         null,
@@ -70,9 +72,7 @@ class _ParentScreenState extends State<ParentScreen> {
       ][index];
 
   String _getTitle(int currentIndex) => [
-        _runsKey.currentState?.isSelectable == true
-            ? "${_runsKey.currentState?.selectedRuns.length ?? 0} selected"
-            : "Your Runs",
+        _runsKey.currentState?.title ?? "Your Runs",
         "Explore",
         "Insights",
         "Settings",
@@ -80,44 +80,33 @@ class _ParentScreenState extends State<ParentScreen> {
 
   List<Widget> _getActions(BuildContext context, int index) => <List<Widget>>[
         [
-          if (_runsKey.currentState?.isSelectable == true)
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () async {
-                    if (_runsKey.currentState?.selectedRuns.isEmpty == true) {
-                      return;
-                    }
-                    setState(() {
-                      _runsKey.currentState?.isSelectable = false;
-                      _runsKey.currentState?.isLoading = true;
-                    });
-                    bool deleteResults =
-                        await RunRepository.instance().deleteRun(
-                      _runsKey.currentState?.selectedRuns ?? [],
-                    );
-                    setState(() {
-                      _runsKey.currentState?.isLoading = false;
-                      _runsKey.currentState?.selectedRuns.clear();
-                    });
-                    if (!deleteResults) {
-                      SnackbarUtils(context: context)
-                          .createSnackbar('Unknown error has occurred');
-                    }
-                  },
-                  icon: const Icon(Icons.delete),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _runsKey.currentState?.isSelectable = false;
-                      _runsKey.currentState?.selectedRuns.clear();
-                    });
-                  },
-                  icon: const Icon(Icons.close),
-                ),
-              ],
+          Visibility(
+            visible: _runsKey.currentState?.isSelectable == true,
+            child: IconButton(
+              onPressed: () async {
+                _runsKey.currentState?.deleteRuns();
+              },
+              icon: const Icon(Icons.delete),
             ),
+          ),
+          Visibility(
+            visible: _runsKey.currentState?.isSelectable == true,
+            child: IconButton(
+              onPressed: () {
+                _runsKey.currentState?.clearSelection();
+              },
+              icon: const Icon(Icons.close),
+            ),
+          ),
+          Visibility(
+            visible: _runsKey.currentState?.isSelectable != true,
+            child: IconButton(
+              onPressed: () {
+                _runsKey.currentState?.enableSelection();
+              },
+              icon: const Icon(Icons.edit),
+            ),
+          ),
         ],
         [
           IconButton(

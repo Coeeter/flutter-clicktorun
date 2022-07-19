@@ -82,9 +82,8 @@ class ProfileImage extends StatelessWidget {
     if (loadingProgress.expectedTotalBytes == null) {
       return const CircularProgressIndicator();
     }
-    double percentLoaded = 1.0 *
-        (loadingProgress.cumulativeBytesLoaded /
-            loadingProgress.expectedTotalBytes!);
+    double percentLoaded = loadingProgress.cumulativeBytesLoaded /
+        loadingProgress.expectedTotalBytes!;
     return CircularProgressIndicator(
       value: percentLoaded,
     );

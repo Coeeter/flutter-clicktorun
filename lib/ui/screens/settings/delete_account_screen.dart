@@ -21,7 +21,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ClickToRunAppbar('Delete Account?').getAppBar(),
+      appBar: CustomAppbar(title: 'Delete Account?'),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Container(

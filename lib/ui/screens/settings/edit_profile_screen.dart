@@ -88,7 +88,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: ClickToRunAppbar("Edit account").getAppBar(),
+        appBar: CustomAppbar(title: "Edit account"),
         body: StreamBuilder<UserModel?>(
             stream: UserRepository.instance().getUserStream(),
             builder: (context, snapshot) {

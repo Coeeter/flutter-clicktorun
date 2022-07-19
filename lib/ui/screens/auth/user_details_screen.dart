@@ -68,7 +68,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: ClickToRunAppbar("Setting up your profile").getAppBar(),
+        appBar: CustomAppbar(title: "Setting up your profile"),
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(

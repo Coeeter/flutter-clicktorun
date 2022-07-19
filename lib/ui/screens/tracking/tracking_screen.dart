@@ -74,7 +74,8 @@ class _TrackingScreenState extends State<TrackingScreen> {
   Widget build(BuildContext context) {
     _configureMapType(context);
     return Scaffold(
-      appBar: ClickToRunAppbar("Tracking your run").getAppBar(
+      appBar: CustomAppbar(
+        title: "Tracking your run",
         actions: [
           if (!_isTracking && !_isFirstTimeTracking)
             IconButton(

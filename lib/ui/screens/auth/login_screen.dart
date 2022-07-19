@@ -66,7 +66,7 @@ class _LoginFormState extends State<LoginForm> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: ClickToRunAppbar("Login to ClickToRun").getAppBar(),
+        appBar: CustomAppbar(title: "Login to ClickToRun"),
         body: Container(
           height: double.infinity,
           decoration: BoxDecoration(
