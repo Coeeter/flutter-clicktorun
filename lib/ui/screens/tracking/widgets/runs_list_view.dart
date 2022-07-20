@@ -65,6 +65,7 @@ class RunsListViewState extends State<RunsListView> {
       physics: widget.isLoading
           ? const NeverScrollableScrollPhysics()
           : const BouncingScrollPhysics(),
+          
       itemBuilder: (context, index) {
         if (widget.isLoading) {
           return _getLoadingListItem();
@@ -144,7 +145,7 @@ class RunsListViewState extends State<RunsListView> {
             highlightColor: _highlightColor,
             baseColor: _baseColor,
             child: Container(
-              height: 16,
+              height: 20,
               color: Colors.grey[300],
             ),
           ),

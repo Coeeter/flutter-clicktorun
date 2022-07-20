@@ -1,3 +1,4 @@
+import 'package:clicktorun_flutter/ui/screens/insights/insights_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/settings_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/your_runs_screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
@@ -26,7 +27,7 @@ class _ParentScreenState extends State<ParentScreen> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        color: Theme.of(context).colorScheme.surface,
         child: _getCurrentScreen(currentIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -67,7 +68,7 @@ class _ParentScreenState extends State<ParentScreen> {
           refreshParent: () => setState(() {}),
         ),
         null,
-        null,
+        const InsightsScreen(),
         SettingsScreen()
       ][index];
 
