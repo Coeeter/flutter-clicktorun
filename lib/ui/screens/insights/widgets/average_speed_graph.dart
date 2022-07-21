@@ -68,6 +68,13 @@ class AverageSpeedOverTimeGraphState extends State<AverageSpeedOverTimeGraph> {
             behaviorPosition: charts.BehaviorPosition.top,
             titleOutsideJustification:
                 charts.OutsideJustification.middleDrawArea,
+            titleStyleSpec: charts.TextStyleSpec(
+              color: charts.ColorUtil.fromDartColor(
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+            ),
           ),
       ],
       domainAxis: charts.OrdinalAxisSpec(

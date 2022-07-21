@@ -19,19 +19,20 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      shape: shape,
-      clipBehavior: Clip.hardEdge,
-      child: InkWell(
-        onTap: onPressed,
-        splashColor: ClickToRunColors.darkModeOverlay,
-        child: Ink(
-          decoration: const BoxDecoration(
-            gradient: ClickToRunColors.linearGradient,
-          ),
-          child: Container(
-            padding: padding,
-            height: padding == null ? 50 : 60,
+    return Container(
+      width: width,
+      padding: padding,
+      height: padding == null ? 50 : 50 + padding!.vertical / 2,
+      child: Material(
+        shape: shape,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: onPressed,
+          splashColor: ClickToRunColors.darkModeOverlay,
+          child: Ink(
+            decoration: const BoxDecoration(
+              gradient: ClickToRunColors.linearGradient,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

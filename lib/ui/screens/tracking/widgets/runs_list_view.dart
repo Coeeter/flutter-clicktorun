@@ -92,50 +92,14 @@ class RunsListViewState extends State<RunsListView> {
             );
           }).toList();
 
-    return ListView(
+    return SingleChildScrollView(
       physics: widget.isLoading
           ? const NeverScrollableScrollPhysics()
           : const BouncingScrollPhysics(),
-      children: children,
+      child: Column(
+        children: children,
+      ),
     );
-    // return ListView.builder(
-    //   physics: widget.isLoading
-    //       ? const NeverScrollableScrollPhysics()
-    //       : const BouncingScrollPhysics(),
-    //   itemBuilder: (context, index) {
-    //     if (widget.isLoading) {
-    //       return _getLoadingListItem();
-    //     }
-    //     GlobalKey<RunsListItemState> listItemKey = GlobalKey();
-    //     allListItems.add(listItemKey);
-    //     return FutureBuilder<String>(
-    //       future: StorageRepository.instance().getDownloadUrl(
-    //         Theme.of(context).brightness == Brightness.dark
-    //             ? widget.runList![index].darkModeImage
-    //             : widget.runList![index].lightModeImage,
-    //       ),
-    //       builder: (context, snapshot) {
-    //         if (snapshot.connectionState == ConnectionState.waiting) {
-    //           return _getLoadingListItem();
-    //         }
-    //         return RunsListItem(
-    //           key: listItemKey,
-    //           parentKey: widget.key as GlobalKey<RunsListViewState>,
-    //           runModel: widget.runList![index],
-    //           imageUrl: snapshot.data!,
-    //           isSelectable: isSelectable,
-    //           onDeleteTap: () async {
-    //             widget.setLoading(true);
-    //             await RunRepository.instance()
-    //                 .deleteRun([widget.runList![index].id]);
-    //             widget.setLoading(false);
-    //           },
-    //         );
-    //       },
-    //     );
-    //   },
-    //   itemCount: widget.isLoading ? 5 : widget.runList?.length,
-    // );
   }
 
   Widget _getLoadingListItem() {
