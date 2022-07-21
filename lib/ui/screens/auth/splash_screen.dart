@@ -9,6 +9,8 @@ import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -71,9 +73,7 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       AnimatedPositioned(
         duration: Duration(seconds: _animationLength),
-        left: _animate
-            ? Screen.width
-            : Screen.width * 0.13,
+        left: _animate ? Screen.width : Screen.width * 0.13,
         child: Image.asset(
           'assets/images/ic_launcher_round_shadow.png',
           width: Screen.width * 0.8,
@@ -86,12 +86,12 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(
               builder: (_) {
                 if (AuthRepository.instance().currentUser == null) {
-                  return LoginForm();
+                  return const LoginForm();
                 }
                 if (user == null) {
-                  return UserDetailsScreen();
+                  return const UserDetailsScreen();
                 }
-                return ParentScreen();
+                return const ParentScreen();
               },
             ),
           );

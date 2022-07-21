@@ -9,6 +9,8 @@ import 'package:clicktorun_flutter/ui/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
@@ -37,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: "Edit Account",
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => EditUserDetailsScreen(),
+                    builder: (_) => const EditUserDetailsScreen(),
                   ));
                 },
               ),
@@ -45,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: "Delete Account",
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => DeleteAccountScreen(),
+                    builder: (_) => const DeleteAccountScreen(),
                   ));
                 },
               ),
@@ -60,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 AuthRepository.instance().logout();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (_) => LoginForm()),
+                  MaterialPageRoute(builder: (_) => const LoginForm()),
                 );
               },
             ),

@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             onSecondary: Colors.white,
             error: Colors.red,
             onError: Colors.white,
-            surface: Color(0xffff1c1b1f),
+            surface: Color(0xff1c1b1f),
             onSurface: Colors.white,
             background: Colors.black,
             onBackground: Colors.white,
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           bottomSheetTheme:
               const BottomSheetThemeData(backgroundColor: Colors.transparent),
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

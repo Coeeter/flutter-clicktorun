@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:clicktorun_flutter/data/daos/run_dao.dart';
@@ -49,7 +50,7 @@ class RunDaoImpl implements RunDao {
       });
       return true;
     } catch (e) {
-      print((e as FirebaseException).message.toString());
+      log((e as FirebaseException).message.toString());
       return false;
     }
   }
@@ -60,7 +61,7 @@ class RunDaoImpl implements RunDao {
       await _firestore.collection('runs').doc(id).update(updateValues);
       return true;
     } catch (e) {
-      print((e as FirebaseException).message.toString());
+      log((e as FirebaseException).message.toString());
       return false;
     }
   }
@@ -79,9 +80,9 @@ class RunDaoImpl implements RunDao {
       await batch.commit();
       return true;
     } catch (e) {
-      print(e);
+      log(e.toString());
       if (e is! FirebaseException) return false;
-      print(e.message.toString());
+      log(e.message.toString());
       return false;
     }
   }
@@ -100,7 +101,7 @@ class RunDaoImpl implements RunDao {
       await batch.commit();
       return true;
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return false;
     }
   }

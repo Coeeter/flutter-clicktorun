@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 
 class GradientButton extends StatelessWidget {
-  String text;
-  void Function() onPressed;
-  double width;
-  ShapeBorder shape;
-  EdgeInsetsGeometry? padding;
+  final String text;
+  final void Function() onPressed;
+  final double width;
+  final ShapeBorder shape;
+  final EdgeInsetsGeometry? padding;
 
-  GradientButton({
+  const GradientButton({
     Key? key,
     required this.text,
     required this.onPressed,
@@ -19,32 +19,30 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      padding: padding,
-      height: padding == null ? 50 : 60,
-      child: RaisedButton(
-        onPressed: onPressed,
-        shape: shape,
-        padding: const EdgeInsets.all(0.0),
+    return Material(
+      shape: shape,
+      clipBehavior: Clip.hardEdge,
+      child: InkWell(
+        onTap: onPressed,
         splashColor: ClickToRunColors.darkModeOverlay,
         child: Ink(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: ClickToRunColors.linearGradient,
-            borderRadius: BorderRadius.circular(30.0),
           ),
           child: Container(
-            alignment: Alignment.center,
+            padding: padding,
+            height: padding == null ? 50 : 60,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
                   text,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                )
               ],
             ),
           ),

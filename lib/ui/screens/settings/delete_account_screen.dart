@@ -9,6 +9,8 @@ import 'package:clicktorun_flutter/ui/widgets/textformfield.dart';
 import 'package:flutter/material.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
+  const DeleteAccountScreen({Key? key}) : super(key: key);
+
   @override
   State<DeleteAccountScreen> createState() => _DeleteAccountScreenState();
 }
@@ -71,7 +73,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                   ),
                 ),
               ),
-              if (_isLoading) LoadingContainer(),
+              if (_isLoading) const LoadingContainer(),
             ],
           ),
         ),
@@ -106,7 +108,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => LoginForm(),
+            builder: (_) => const LoginForm(),
           ),
         );
       } catch (e) {

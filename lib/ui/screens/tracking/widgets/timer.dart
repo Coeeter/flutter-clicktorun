@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
 class TimerText extends StatefulWidget {
-  String text;
-  TimerText({
-    required this.text,
-  });
-  final _TimerTextState _state = _TimerTextState();
-  void setText(String timeTaken) => _state.setText(timeTaken);
+  const TimerText({Key? key}) : super(key: key);
 
   @override
-  State<TimerText> createState() => _state;
+  State<TimerText> createState() => TimerTextState();
 }
 
-class _TimerTextState extends State<TimerText> {
+class TimerTextState extends State<TimerText> {
+  String text = "00:00:00";
+
+  void setText(String timeTaken) {
+    setState(() {
+      text = timeTaken;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,7 +24,7 @@ class _TimerTextState extends State<TimerText> {
       child: Align(
         alignment: Alignment.centerRight,
         child: Text(
-          widget.text,
+          text,
           style: TextStyle(
             color: Theme.of(context).brightness == Brightness.dark
                 ? Colors.white
@@ -31,11 +34,5 @@ class _TimerTextState extends State<TimerText> {
         ),
       ),
     );
-  }
-
-  void setText(String timeTaken) {
-    setState(() {
-      widget.text = timeTaken;
-    });
   }
 }

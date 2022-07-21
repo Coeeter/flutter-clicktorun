@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -6,9 +8,10 @@ class DraggableFloatingActionButton extends StatefulWidget {
   final GlobalKey parentKey;
 
   const DraggableFloatingActionButton({
+    Key? key,
     required this.parentKey,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _DraggableFloatingActionButtonState();
@@ -45,7 +48,7 @@ class _DraggableFloatingActionButtonState
           _offset = _maxOffset;
         });
       } catch (e) {
-        print('catch: $e');
+        log('catch: $e');
       }
     });
   }

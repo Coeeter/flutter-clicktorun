@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class ForgetPasswordForm extends StatefulWidget {
+  const ForgetPasswordForm({Key? key}) : super(key: key);
   @override
   State<ForgetPasswordForm> createState() => _ForgetPasswordFormState();
 }
@@ -96,7 +97,7 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
                   ),
                 ),
               ),
-              if (isLoading) LoadingContainer()
+              if (isLoading) const LoadingContainer()
             ],
           ),
         ),

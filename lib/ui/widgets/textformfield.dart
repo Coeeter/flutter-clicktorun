@@ -25,7 +25,8 @@ class CustomTextFormField extends StatefulWidget {
     this.passwordLengthCheck = false,
     this.doubleCheck = false,
     this.initialValue,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();

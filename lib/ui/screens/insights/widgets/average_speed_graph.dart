@@ -47,7 +47,7 @@ class AverageSpeedOverTimeGraphState extends State<AverageSpeedOverTimeGraph> {
           DateTime dateRan = DateTime.fromMillisecondsSinceEpoch(
             runModel.timeStartedInMilliseconds,
           ).toLocal();
-          return "${dateRan.hour}:${dateRan.minute}:${dateRan.second}\n"
+          return "${dateRan.hour < 10 ? '0' + dateRan.hour.toString() : dateRan.hour}:${dateRan.minute < 10 ? '0' + dateRan.minute.toString() : dateRan.minute}:${dateRan.second < 10 ? '0' + dateRan.second.toString() : dateRan.second}\n"
               "${dateRan.day} ${_months[dateRan.month - 1]}";
         },
         measureFn: (RunModel runModel, _) => runModel.averageSpeed,

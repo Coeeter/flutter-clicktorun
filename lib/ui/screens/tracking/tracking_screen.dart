@@ -1,47 +1,41 @@
 import 'dart:async';
-import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:clicktorun_flutter/data/model/run_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
-import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/widgets/distance.dart';
+import 'package:clicktorun_flutter/ui/screens/tracking/widgets/map_widget.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/widgets/timer.dart';
-import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:clicktorun_flutter/ui/utils/extensions.dart';
-import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
 import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 
 class TrackingScreen extends StatefulWidget {
+  const TrackingScreen({Key? key}) : super(key: key);
+
   @override
   State<TrackingScreen> createState() => _TrackingScreenState();
 }
 
 class _TrackingScreenState extends State<TrackingScreen> {
-  GoogleMapController? _controller;
-  String lightMode = "";
-  String darkMode = "";
-
-  bool _permissionGranted = false;
   final Location _location = Location();
-  final Set<Polyline> _polylines = {};
   final List<List<LatLng>> _runRoute = [];
+  bool _permissionGranted = false;
   bool _takingSnapshot = false;
   bool _isTracking = false;
   bool _isFirstTimeTracking = true;
   int _timeTakenInMilliseconds = 0;
   int _timeStartedInMilliseconds = 0;
+  double _distanceRan = 0;
 
-  final TimerText _timerTextView = TimerText(text: "00:00:00");
-  final DistanceText _distanceText = DistanceText(text: "0m");
+  final GlobalKey<TrackingMapState> _mapKey = GlobalKey();
+  final GlobalKey<DistanceTextState> _distanceTextKey = GlobalKey();
+  final GlobalKey<TimerTextState> _timerTextKey = GlobalKey();
 
   Future<bool> _isLocationEnabled() async {
     bool serviceEnabled = await _location.serviceEnabled();
@@ -58,21 +52,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    (() async {
-      lightMode = await rootBundle.loadString(
-        'assets/map_styles/light_mode.json',
-      );
-      darkMode = await rootBundle.loadString(
-        'assets/map_styles/dark_mode.json',
-      );
-    })();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    _configureMapType(context);
     return Scaffold(
       appBar: CustomAppbar(
         title: "Tracking your run",
@@ -124,7 +104,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            LoadingContainer(
+            const LoadingContainer(
               overlayVisibility: false,
             ),
             const SizedBox(
@@ -150,53 +130,21 @@ class _TrackingScreenState extends State<TrackingScreen> {
       _isTracking = false;
       _takingSnapshot = true;
     });
-
     await Future.delayed(const Duration(milliseconds: 200));
     _location.enableBackgroundMode(enable: false);
-    _controller?.moveCamera(
-      CameraUpdate.newLatLngBounds(
-        _getBounds(_runRoute),
-        MediaQuery.of(context).size.width * 0.05,
-      ),
-    );
-
-    _controller?.setMapStyle(lightMode);
-    await Future.delayed(const Duration(milliseconds: 500));
-    Uint8List? lightModeImage = await _controller?.takeSnapshot();
-
-    _controller?.setMapStyle(darkMode);
-    await Future.delayed(const Duration(milliseconds: 500));
-    Uint8List? darkModeImage = await _controller?.takeSnapshot();
-
-    String lightModeImageName = "maps/light-${const Uuid().v4()}";
-    String darkModeImageName = "maps/dark-${const Uuid().v4()}";
-    double averageSpeed = (_distanceText.distanceRanInMetres / 1000) /
-        (_timeTakenInMilliseconds / 1000 / 60 / 60);
+    double distanceRanInKilometres = _distanceRan / 1000;
+    double timeTakenInHours = _timeTakenInMilliseconds / 1000 / 60 / 60;
     RunModel runModel = RunModel(
       id: '',
       email: AuthRepository.instance().currentUser!.email!,
-      darkModeImage: darkModeImageName,
-      lightModeImage: lightModeImageName,
+      darkModeImage: "maps/dark-${const Uuid().v4()}",
+      lightModeImage: "maps/light-${const Uuid().v4()}",
       timeStartedInMilliseconds: _timeStartedInMilliseconds,
       timeTakenInMilliseconds: _timeTakenInMilliseconds,
-      distanceRanInMetres: _distanceText.distanceRanInMetres,
-      averageSpeed: averageSpeed,
+      distanceRanInMetres: _distanceRan,
+      averageSpeed: distanceRanInKilometres / timeTakenInHours,
     );
-
-    await RunRepository.instance().insertRun(
-      runModel,
-      lightModeImage!,
-      darkModeImage!,
-    )
-        ? Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ParentScreen(),
-            ),
-          )
-        : SnackbarUtils(context: context).createSnackbar(
-            'Unknown error has occurred',
-          );
+    _mapKey.currentState!.saveRun(runModel, _runRoute);
   }
 
   void _closeRun(BuildContext context) {
@@ -205,7 +153,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => ParentScreen(),
+          builder: (_) => const ParentScreen(),
         ),
       );
       return;
@@ -232,7 +180,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => ParentScreen(),
+                  builder: (_) => const ParentScreen(),
                 ),
               );
             },
@@ -253,7 +201,7 @@ class _TrackingScreenState extends State<TrackingScreen> {
           decoration: BoxDecoration(
             color: Theme.of(context).brightness == Brightness.light
                 ? const Color.fromARGB(207, 255, 255, 255)
-                : const Color(0xff80000000),
+                : const Color(0x80000000),
             borderRadius: const BorderRadius.all(
               Radius.circular(999),
             ),
@@ -261,14 +209,14 @@ class _TrackingScreenState extends State<TrackingScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _timerTextView,
+              TimerText(key: _timerTextKey),
               GradientButton(
                 text: _isTracking ? "Pause" : "Start",
                 onPressed: _handleClick,
                 width: (MediaQuery.of(context).size.width - 20) / 3,
                 padding: const EdgeInsets.all(10),
               ),
-              _distanceText,
+              DistanceText(key: _distanceTextKey),
             ],
           ),
         ),
@@ -308,22 +256,13 @@ class _TrackingScreenState extends State<TrackingScreen> {
       return const Text("No Permission has been granted");
     }
     _setLocationListener();
-    return GoogleMap(
-      initialCameraPosition: const CameraPosition(
-        target: LatLng(1.3521, 103.8198),
-        zoom: 10.0,
-      ),
-      polylines: _polylines,
-      zoomControlsEnabled: false,
-      onMapCreated: (controller) {
-        _controller = controller;
-        _configureMapType(context);
-      },
+    return TrackingMap(
+      key: _mapKey,
     );
   }
 
   void _setLocationListener() {
-    _location.onLocationChanged.listen((locationData) {
+    _location.onLocationChanged.distinct().listen((locationData) {
       if (!_isTracking) return;
       _runRoute.last.add(
         LatLng(
@@ -331,49 +270,11 @@ class _TrackingScreenState extends State<TrackingScreen> {
           locationData.longitude!,
         ),
       );
-      _distanceText.setDistance(_runRoute);
-      setState(() {
-        _polylines.clear();
-        for (var individualRoute in _runRoute) {
-          _polylines.add(
-            Polyline(
-              polylineId: PolylineId(const Uuid().v4()),
-              visible: true,
-              points: individualRoute,
-              width: 3,
-              color: ClickToRunColors.primary,
-            ),
-          );
-        }
-      });
-      _controller!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: _runRoute.last.last,
-            zoom: 18.5,
-          ),
-        ),
-      );
+      _distanceRan = _runRoute.calculateDistance();
+      _distanceTextKey.currentState!.setDistance(_distanceRan);
+      _mapKey.currentState!.setPolylines(_runRoute);
+      _mapKey.currentState!.animateCamera(_runRoute.last.last);
     });
-  }
-
-  LatLngBounds _getBounds(List<List<LatLng>> route) {
-    double south = route[0][0].latitude,
-        north = route[0][0].latitude,
-        west = route[0][0].longitude,
-        east = route[0][0].longitude;
-    for (List<LatLng> list in route) {
-      for (LatLng latLng in list) {
-        south = min(south, latLng.latitude);
-        north = max(north, latLng.latitude);
-        west = min(west, latLng.longitude);
-        east = max(east, latLng.longitude);
-      }
-    }
-    return LatLngBounds(
-      southwest: LatLng(south, west),
-      northeast: LatLng(north, east),
-    );
   }
 
   void _startTimer() {
@@ -384,13 +285,10 @@ class _TrackingScreenState extends State<TrackingScreen> {
       (timer) {
         if (!_isTracking) return timer.cancel();
         _timeTakenInMilliseconds += 1000;
-        _timerTextView.setText(_timeTakenInMilliseconds.toTimeString());
+        _timerTextKey.currentState!
+            .setText(_timeTakenInMilliseconds.toTimeString());
         _setUpNotification(_timeTakenInMilliseconds.toTimeString());
       },
     );
   }
-
-  void _configureMapType(BuildContext context) => _controller?.setMapStyle(
-        Theme.of(context).brightness == Brightness.dark ? darkMode : lightMode,
-      );
 }

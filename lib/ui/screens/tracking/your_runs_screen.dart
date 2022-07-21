@@ -11,9 +11,10 @@ import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
 class YourRunsScreen extends StatefulWidget {
-  void Function() refreshParent;
-  GlobalKey<CustomAppbarState> appbarKey;
-  YourRunsScreen({
+  final void Function() refreshParent;
+  final GlobalKey<CustomAppbarState> appbarKey;
+
+  const YourRunsScreen({
     required Key key,
     required this.appbarKey,
     required this.refreshParent,
@@ -49,7 +50,7 @@ class YourRunsScreenState extends State<YourRunsScreen> {
           onPressed: () => Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => TrackingScreen(),
+              builder: (_) => const TrackingScreen(),
             ),
           ),
         ),

@@ -2,16 +2,17 @@ import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImage extends StatelessWidget {
-  double width;
-  ColorScheme colorScheme;
-  AsyncSnapshot<UserModel?> snapshot;
-  void Function()? onTap;
-  ProfileImage({
+  final double width;
+  final ColorScheme colorScheme;
+  final AsyncSnapshot<UserModel?> snapshot;
+  final void Function()? onTap;
+  const ProfileImage({
     required this.width,
     required this.colorScheme,
     required this.snapshot,
     this.onTap,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

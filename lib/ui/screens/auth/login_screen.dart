@@ -14,6 +14,7 @@ import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/gradient_button.dart';
 
 class LoginForm extends StatefulWidget {
+  const LoginForm({Key? key}) : super(key: key);
   @override
   State<LoginForm> createState() => _LoginFormState();
 }
@@ -45,8 +46,8 @@ class _LoginFormState extends State<LoginForm> {
           context,
           MaterialPageRoute(
             builder: (_) {
-              if (user == null) return UserDetailsScreen();
-              return ParentScreen();
+              if (user == null) return const UserDetailsScreen();
+              return const ParentScreen();
             },
           ),
         );
@@ -119,7 +120,7 @@ class _LoginFormState extends State<LoginForm> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      ForgetPasswordForm(),
+                                      const ForgetPasswordForm(),
                                 ),
                               );
                             },
@@ -148,7 +149,7 @@ class _LoginFormState extends State<LoginForm> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    RegisterForm(),
+                                    const RegisterForm(),
                               ),
                             );
                           },
@@ -161,7 +162,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              if (isLoading) LoadingContainer()
+              if (isLoading) const LoadingContainer()
             ],
           ),
         ),

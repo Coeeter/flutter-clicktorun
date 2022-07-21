@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:clicktorun_flutter/data/daos/user_dao.dart';
@@ -30,7 +31,7 @@ class UserDaoImpl implements UserDao {
         await _getProfileImageUrl(document),
       ));
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return null;
     }
   }
@@ -63,7 +64,7 @@ class UserDaoImpl implements UserDao {
       await _firestore.collection('users').doc(user.email).set(map);
       return Future.value(true);
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return Future.value(false);
     }
   }
@@ -93,7 +94,7 @@ class UserDaoImpl implements UserDao {
           .update(map);
       return Future.value(true);
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return Future.value(false);
     }
   }
@@ -109,7 +110,7 @@ class UserDaoImpl implements UserDao {
       await _firebaseAuth.currentUser!.delete();
       return Future.value(true);
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return Future.value(false);
     }
   }
@@ -127,7 +128,7 @@ class UserDaoImpl implements UserDao {
       }
       return Future.value(true);
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return Future.value(false);
     }
   }

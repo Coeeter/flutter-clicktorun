@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditUserDetailsScreen extends StatefulWidget {
+  const EditUserDetailsScreen({Key? key}) : super(key: key);
+
   @override
   State<EditUserDetailsScreen> createState() => _EditUserDetailsScreenState();
 }
@@ -95,7 +97,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
               if (!snapshot.hasData || _isUploading) {
                 return Container(
                   color: Theme.of(context).colorScheme.surface,
-                  child: LoadingContainer(
+                  child: const LoadingContainer(
                     overlayVisibility: false,
                   ),
                 );
@@ -181,7 +183,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
                         ),
                       ),
                     ),
-                    if (_isLoading) LoadingContainer(),
+                    if (_isLoading) const LoadingContainer(),
                   ],
                 ),
               );

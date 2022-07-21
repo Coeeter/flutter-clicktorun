@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ParentScreen extends StatefulWidget {
+  const ParentScreen({Key? key}) : super(key: key);
+
   @override
   State<ParentScreen> createState() => _ParentScreenState();
 }
@@ -69,7 +71,7 @@ class _ParentScreenState extends State<ParentScreen> {
         ),
         null,
         const InsightsScreen(),
-        SettingsScreen()
+        const SettingsScreen()
       ][index];
 
   String _getTitle(int currentIndex) => [

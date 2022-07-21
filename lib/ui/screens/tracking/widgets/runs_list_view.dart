@@ -61,45 +61,81 @@ class RunsListViewState extends State<RunsListView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    List<Widget> children = widget.isLoading
+        ? List.filled(5, _getLoadingListItem())
+        : widget.runList!.map((RunModel runModel) {
+            GlobalKey<RunsListItemState> listItemKey = GlobalKey();
+            allListItems.add(listItemKey);
+            return FutureBuilder<String>(
+              future: StorageRepository.instance().getDownloadUrl(
+                Theme.of(context).brightness == Brightness.dark
+                    ? runModel.darkModeImage
+                    : runModel.lightModeImage,
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return _getLoadingListItem();
+                }
+                return RunsListItem(
+                  key: listItemKey,
+                  parentKey: widget.key as GlobalKey<RunsListViewState>,
+                  runModel: runModel,
+                  imageUrl: snapshot.data!,
+                  isSelectable: isSelectable,
+                  onDeleteTap: () async {
+                    widget.setLoading(true);
+                    await RunRepository.instance().deleteRun([runModel.id]);
+                    widget.setLoading(false);
+                  },
+                );
+              },
+            );
+          }).toList();
+
+    return ListView(
       physics: widget.isLoading
           ? const NeverScrollableScrollPhysics()
           : const BouncingScrollPhysics(),
-          
-      itemBuilder: (context, index) {
-        if (widget.isLoading) {
-          return _getLoadingListItem();
-        }
-        GlobalKey<RunsListItemState> listItemKey = GlobalKey();
-        allListItems.add(listItemKey);
-        return FutureBuilder<String>(
-          future: StorageRepository.instance().getDownloadUrl(
-            Theme.of(context).brightness == Brightness.dark
-                ? widget.runList![index].darkModeImage
-                : widget.runList![index].lightModeImage,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return _getLoadingListItem();
-            }
-            return RunsListItem(
-              key: listItemKey,
-              parentKey: widget.key as GlobalKey<RunsListViewState>,
-              runModel: widget.runList![index],
-              imageUrl: snapshot.data!,
-              isSelectable: isSelectable,
-              onDeleteTap: () async {
-                widget.setLoading(true);
-                await RunRepository.instance()
-                    .deleteRun([widget.runList![index].id]);
-                widget.setLoading(false);
-              },
-            );
-          },
-        );
-      },
-      itemCount: widget.isLoading ? 5 : widget.runList?.length,
+      children: children,
     );
+    // return ListView.builder(
+    //   physics: widget.isLoading
+    //       ? const NeverScrollableScrollPhysics()
+    //       : const BouncingScrollPhysics(),
+    //   itemBuilder: (context, index) {
+    //     if (widget.isLoading) {
+    //       return _getLoadingListItem();
+    //     }
+    //     GlobalKey<RunsListItemState> listItemKey = GlobalKey();
+    //     allListItems.add(listItemKey);
+    //     return FutureBuilder<String>(
+    //       future: StorageRepository.instance().getDownloadUrl(
+    //         Theme.of(context).brightness == Brightness.dark
+    //             ? widget.runList![index].darkModeImage
+    //             : widget.runList![index].lightModeImage,
+    //       ),
+    //       builder: (context, snapshot) {
+    //         if (snapshot.connectionState == ConnectionState.waiting) {
+    //           return _getLoadingListItem();
+    //         }
+    //         return RunsListItem(
+    //           key: listItemKey,
+    //           parentKey: widget.key as GlobalKey<RunsListViewState>,
+    //           runModel: widget.runList![index],
+    //           imageUrl: snapshot.data!,
+    //           isSelectable: isSelectable,
+    //           onDeleteTap: () async {
+    //             widget.setLoading(true);
+    //             await RunRepository.instance()
+    //                 .deleteRun([widget.runList![index].id]);
+    //             widget.setLoading(false);
+    //           },
+    //         );
+    //       },
+    //     );
+    //   },
+    //   itemCount: widget.isLoading ? 5 : widget.runList?.length,
+    // );
   }
 
   Widget _getLoadingListItem() {

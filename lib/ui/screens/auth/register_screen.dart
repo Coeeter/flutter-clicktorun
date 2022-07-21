@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterForm extends StatefulWidget {
+  const RegisterForm({Key? key}) : super(key: key);
+
   @override
   State<RegisterForm> createState() => _RegisterFormState();
 }
@@ -78,7 +80,8 @@ class _RegisterFormState extends State<RegisterForm> {
                         Container(
                           width: double.infinity,
                           height: 250,
-                          child: Image.asset('assets/images/ic_sign_up_page.png'),
+                          child:
+                              Image.asset('assets/images/ic_sign_up_page.png'),
                           padding: const EdgeInsets.all(50),
                         ),
                         CustomTextFormField(
@@ -138,7 +141,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ),
               ),
-              if (isLoading) LoadingContainer()
+              if (isLoading) const LoadingContainer()
             ],
           ),
         ),

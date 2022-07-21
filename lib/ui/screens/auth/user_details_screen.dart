@@ -11,6 +11,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class UserDetailsScreen extends StatefulWidget {
+  const UserDetailsScreen({Key? key}) : super(key: key);
+
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
 }
@@ -49,7 +51,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => ParentScreen(),
+            builder: (_) => const ParentScreen(),
           ),
         );
       } catch (e) {
@@ -135,7 +137,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   ),
                 ),
               ),
-              if (isLoading) LoadingContainer()
+              if (isLoading) const LoadingContainer()
             ],
           ),
         ),
