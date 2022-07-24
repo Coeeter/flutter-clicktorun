@@ -1,5 +1,5 @@
 # Flutter-ClickToRun, A User-Friendly Running Tracker App
-<img src="https://github.com/Coeeter/flutter-clicktorun/blob/master/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png?raw=true" align="left">
+<img src="https://github.com/Coeeter/flutter-clicktorun/blob/master/android/app/src/main/ic_launcher-playstore.png?raw=true" align="left" width="300">
 Flutter-ClickToRun is an application built using the Flutter framework with firebase as the backend. This application is being created for my modules in my studies at Temasek Polytechnic to show my proficiency in Flutter devolopment.
 <br clear="left"/>
 
