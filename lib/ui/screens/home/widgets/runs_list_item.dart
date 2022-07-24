@@ -1,5 +1,6 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/widgets/runs_list_view.dart';
+import 'package:clicktorun_flutter/ui/screens/home/run_details_screen.dart';
+import 'package:clicktorun_flutter/ui/screens/home/widgets/runs_list_view.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:clicktorun_flutter/ui/utils/extensions.dart';
@@ -49,7 +50,20 @@ class RunsListItemState extends State<RunsListItem> {
       padding: const EdgeInsets.all(10),
       child: GestureDetector(
         onTap: () {
-          if (!widget.isSelectable) return;
+          if (!widget.isSelectable) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return RunDetailsScreen(
+                    runModel: widget.runModel,
+                    imageUrl: widget.imageUrl,
+                  );
+                },
+              ),
+            );
+            return;
+          }
           setState(() {
             isSelected = !isSelected;
           });
@@ -108,22 +122,25 @@ class RunsListItemState extends State<RunsListItem> {
   }
 
   Widget _getImage(RunModel runModel) {
-    return Image.network(
-      widget.imageUrl,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) {
-          return child;
-        }
-        return Shimmer.fromColors(
-          highlightColor: _highlightColor,
-          baseColor: _baseColor,
-          child: Container(
-            height: (Screen.width - 20) / 2,
-            width: Screen.width - 20,
-            color: _baseColor,
-          ),
-        );
-      },
+    return Hero(
+      tag: 'image-${runModel.id}',
+      child: Image.network(
+        widget.imageUrl,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+          return Shimmer.fromColors(
+            highlightColor: _highlightColor,
+            baseColor: _baseColor,
+            child: Container(
+              height: (Screen.width - 20) / 2,
+              width: Screen.width - 20,
+              color: _baseColor,
+            ),
+          );
+        },
+      ),
     );
   }
 

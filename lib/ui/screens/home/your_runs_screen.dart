@@ -1,11 +1,12 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
+import 'package:clicktorun_flutter/data/repositories/position_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/tracking/tracking_screen.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/widgets/runs_list_view.dart';
+import 'package:clicktorun_flutter/ui/screens/home/widgets/runs_list_view.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/widgets/draggable_fab.dart';
+import 'package:clicktorun_flutter/ui/screens/home/widgets/draggable_fab.dart';
 import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:flutter/material.dart';
@@ -77,21 +78,26 @@ class YourRunsScreenState extends State<YourRunsScreen> {
     if (!snapshotIsWaiting && (!snapshot.hasData || snapshot.data!.isEmpty)) {
       return _getNoRunsToDisplay();
     }
-    return RunsListView(
-      key: _listViewKey,
-      runList: snapshot.data,
-      isLoading: snapshotIsWaiting,
-      updateTitle: (int count) {
-        if (isSelectable) {
-          return widget.appbarKey.currentState?.setTitle("$count selected");
-        }
-        widget.appbarKey.currentState?.setTitle("Your Runs");
-      },
-      setLoading: (bool value) {
-        setState(() {
-          isLoading = value;
-        });
-      },
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Theme.of(context).colorScheme.surface,
+      child: RunsListView(
+        key: _listViewKey,
+        runList: snapshot.data,
+        isLoading: snapshotIsWaiting,
+        updateTitle: (int count) {
+          if (isSelectable) {
+            return widget.appbarKey.currentState?.setTitle("$count selected");
+          }
+          widget.appbarKey.currentState?.setTitle("Your Runs");
+        },
+        setLoading: (bool value) {
+          setState(() {
+            isLoading = value;
+          });
+        },
+      ),
     );
   }
 
@@ -164,13 +170,20 @@ class YourRunsScreenState extends State<YourRunsScreen> {
     });
     widget.appbarKey.currentState?.setTitle("Your Runs");
     widget.refreshParent();
+    List<String> selectedItems = _listViewKey.currentState!.selectedItems;
     bool deleteResults = await RunRepository.instance().deleteRun(
-      _listViewKey.currentState!.selectedItems,
+      selectedItems,
     );
+    bool isPositionDeleted = false;
+    for (String runId in selectedItems) {
+      isPositionDeleted = await PositionRepository.instance().deleteRunRoute(
+        runId,
+      );
+    }
     setState(() {
       isLoading = false;
     });
-    if (!deleteResults) {
+    if (!deleteResults || !isPositionDeleted) {
       SnackbarUtils(context: context).createSnackbar(
         'Unknown error has occurred',
       );

@@ -39,7 +39,7 @@ class RunDaoImpl implements RunDao {
     try {
       await _reference.child(runModel.lightModeImage).putData(lightModeImage);
       await _reference.child(runModel.darkModeImage).putData(darkModeImage);
-      await _firestore.collection('runs').doc().set({
+      await _firestore.collection('runs').doc(runModel.id).set({
         'email': runModel.email,
         'darkModeImage': runModel.darkModeImage,
         'lightModeImage': runModel.lightModeImage,
@@ -50,7 +50,7 @@ class RunDaoImpl implements RunDao {
       });
       return true;
     } catch (e) {
-      log((e as FirebaseException).message.toString());
+      log(e.toString());
       return false;
     }
   }
@@ -61,7 +61,7 @@ class RunDaoImpl implements RunDao {
       await _firestore.collection('runs').doc(id).update(updateValues);
       return true;
     } catch (e) {
-      log((e as FirebaseException).message.toString());
+      log(e.toString());
       return false;
     }
   }
@@ -81,8 +81,6 @@ class RunDaoImpl implements RunDao {
       return true;
     } catch (e) {
       log(e.toString());
-      if (e is! FirebaseException) return false;
-      log(e.message.toString());
       return false;
     }
   }

@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:clicktorun_flutter/data/model/position_model.dart';
 import 'package:clicktorun_flutter/data/model/run_model.dart';
+import 'package:clicktorun_flutter/data/repositories/position_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
@@ -52,16 +54,33 @@ class TrackingMapState extends State<TrackingMap> {
     );
   }
 
-  void saveRun(RunModel runModel, List<List<LatLng>> runRoute) async {
-    _setLatLngBounds(runRoute);
+  void saveRun(RunModel runModel, List<List<Position>> runRoute) async {
+    _setLatLngBounds(
+      runRoute.map((polyline) {
+        return polyline.map((position) => position.toLatLng()).toList();
+      }).toList(),
+    );
     Uint8List? lightModeImage = await _takeMapSnapshot();
     Uint8List? darkModeImage = await _takeMapSnapshot(Brightness.dark);
+    Uuid uuid = const Uuid();
+    runModel.id = uuid.v4();
+    for (List<Position> positionList in runRoute) {
+      String polylineId = uuid.v4();
+      for (Position position in positionList) {
+        position.polylineId = polylineId;
+      }
+    }
     bool insertResults = await RunRepository.instance().insertRun(
       runModel,
       lightModeImage!,
       darkModeImage!,
     );
-    if (!insertResults) {
+    bool insertrouteResult =
+        await PositionRepository.instance().insertPositionList(
+      runRoute,
+      runModel.id,
+    );
+    if (!insertResults || !insertrouteResult) {
       return SnackbarUtils(context: context).createSnackbar(
         'Unknown error has occurred',
       );

@@ -1,6 +1,6 @@
 import 'package:clicktorun_flutter/ui/screens/insights/insights_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/settings_screen.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/your_runs_screen.dart';
+import 'package:clicktorun_flutter/ui/screens/home/your_runs_screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

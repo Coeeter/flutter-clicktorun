@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:clicktorun_flutter/data/model/position_model.dart';
 import 'package:clicktorun_flutter/data/model/run_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/parent/parent_screen.dart';
@@ -24,7 +26,7 @@ class TrackingScreen extends StatefulWidget {
 
 class _TrackingScreenState extends State<TrackingScreen> {
   final Location _location = Location();
-  final List<List<LatLng>> _runRoute = [];
+  final List<List<Position>> _runRoute = [];
   bool _permissionGranted = false;
   bool _takingSnapshot = false;
   bool _isTracking = false;
@@ -57,11 +59,13 @@ class _TrackingScreenState extends State<TrackingScreen> {
       appBar: CustomAppbar(
         title: "Tracking your run",
         actions: [
-          if (!_isTracking && !_isFirstTimeTracking)
-            IconButton(
+          Visibility(
+            visible: !_isTracking && !_isFirstTimeTracking,
+            child: IconButton(
               onPressed: () => _saveRun(),
               icon: const Icon(Icons.save),
             ),
+          ),
           IconButton(
             onPressed: () => _closeRun(context),
             icon: const Icon(Icons.close),
@@ -242,8 +246,14 @@ class _TrackingScreenState extends State<TrackingScreen> {
   void _setUpNotification([
     String subtitle = "00:00:00",
   ]) {
+    late String distanceRan;
+    if (_distanceRan < 1000) {
+      distanceRan = "${_distanceRan.toInt()}m";
+    } else {
+      distanceRan = "${_distanceRan / 1000}km";
+    }
     _location.changeNotificationOptions(
-      title: 'Tracking your run',
+      title: 'You have ran $distanceRan, keep it up!',
       iconName: 'ic_shoes',
       subtitle: subtitle,
       onTapBringToFront: true,
@@ -264,16 +274,14 @@ class _TrackingScreenState extends State<TrackingScreen> {
   void _setLocationListener() {
     _location.onLocationChanged.distinct().listen((locationData) {
       if (!_isTracking) return;
-      _runRoute.last.add(
-        LatLng(
-          locationData.latitude!,
-          locationData.longitude!,
-        ),
-      );
-      _distanceRan = _runRoute.calculateDistance();
+      _runRoute.last.add(Position.fromLocationData(locationData));
+      List<List<LatLng>> polylines = _runRoute.map((polyline) {
+        return polyline.map((position) => position.toLatLng()).toList();
+      }).toList();
+      _distanceRan = polylines.calculateDistance();
       _distanceTextKey.currentState!.setDistance(_distanceRan);
-      _mapKey.currentState!.setPolylines(_runRoute);
-      _mapKey.currentState!.animateCamera(_runRoute.last.last);
+      _mapKey.currentState!.setPolylines(polylines);
+      _mapKey.currentState!.animateCamera(polylines.last.last);
     });
   }
 
@@ -285,9 +293,9 @@ class _TrackingScreenState extends State<TrackingScreen> {
       (timer) {
         if (!_isTracking) return timer.cancel();
         _timeTakenInMilliseconds += 1000;
-        _timerTextKey.currentState!
-            .setText(_timeTakenInMilliseconds.toTimeString());
-        _setUpNotification(_timeTakenInMilliseconds.toTimeString());
+        var timeTaken = _timeTakenInMilliseconds.toTimeString();
+        _timerTextKey.currentState!.setText(timeTaken);
+        _setUpNotification(timeTaken);
       },
     );
   }

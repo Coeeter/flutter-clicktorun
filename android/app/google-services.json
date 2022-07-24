@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "549744202634",
-    "project_id": "flutter-clicktorun",
-    "storage_bucket": "flutter-clicktorun.appspot.com"
+    "project_number": "40960656291",
+    "project_id": "flutter-clicktorun-ba2f4",
+    "storage_bucket": "flutter-clicktorun-ba2f4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:549744202634:android:c4abfa91b8fdd29c8aae73",
+        "mobilesdk_app_id": "1:40960656291:android:b32f64cff8de48459d1016",
         "android_client_info": {
           "package_name": "com.example.clicktorun_flutter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "549744202634-1kip56lvedb7olgamlrivmu3c77e09gi.apps.googleusercontent.com",
+          "client_id": "40960656291-lhple5qc2p18v6s0620vbmva3dk1gnp0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC3kqMbTG0KJcfQTirUkV1z9MOisSPEYys"
+          "current_key": "AIzaSyA-hiAxmannvMQ37ow_7x4DgtrI06-sK20"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "549744202634-1kip56lvedb7olgamlrivmu3c77e09gi.apps.googleusercontent.com",
+              "client_id": "40960656291-lhple5qc2p18v6s0620vbmva3dk1gnp0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

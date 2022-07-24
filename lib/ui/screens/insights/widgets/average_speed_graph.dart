@@ -82,7 +82,7 @@ class AverageSpeedOverTimeGraphState extends State<AverageSpeedOverTimeGraph> {
         renderSpec: charts.GridlineRendererSpec(
           labelStyle: charts.TextStyleSpec(
             color: labelColor,
-          ), //chnage white color as per your requirement.
+          ),
         ),
       ),
       primaryMeasureAxis: charts.NumericAxisSpec(
@@ -96,7 +96,7 @@ class AverageSpeedOverTimeGraphState extends State<AverageSpeedOverTimeGraph> {
         charts.SelectionModelConfig(
           type: charts.SelectionModelType.info,
           changedListener: (charts.SelectionModel<String> selectionModel) {
-            final List<charts.SeriesDatum<String>> selectedDatum =
+            List<charts.SeriesDatum<String>> selectedDatum =
                 selectionModel.selectedDatum;
             setState(() {
               selectedSpeed =

@@ -133,21 +133,17 @@ class UserDaoImpl implements UserDao {
     }
   }
 
-  bool _docChecker(DocumentSnapshot<Map<String, dynamic>> document) =>
-      !document.exists ||
-      !document.data()!.containsKey('username') ||
-      !document.data()!.containsKey('heightInCentimetres') ||
-      !document.data()!.containsKey('weightInKilograms');
+  bool _docChecker(DocumentSnapshot<Map<String, dynamic>> document) {
+    return !document.exists ||
+        !document.data()!.containsKey('username') ||
+        !document.data()!.containsKey('heightInCentimetres') ||
+        !document.data()!.containsKey('weightInKilograms');
+  }
 
   Future<String?> _getProfileImageUrl(
     DocumentSnapshot<Map<String, dynamic>> document,
   ) async {
-    String? profileUrl;
-    if (!document.data()!.containsKey('profileImage')) {
-      return null;
-    }
-    profileUrl =
-        await _reference.child(document['profileImage']).getDownloadURL();
-    return profileUrl;
+    if (!document.data()!.containsKey('profileImage')) return null;
+    return (await _reference.child(document['profileImage']).getDownloadURL());
   }
 }

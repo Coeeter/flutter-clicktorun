@@ -1,7 +1,8 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
+import 'package:clicktorun_flutter/data/repositories/position_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
-import 'package:clicktorun_flutter/ui/screens/tracking/widgets/runs_list_item.dart';
+import 'package:clicktorun_flutter/ui/screens/home/widgets/runs_list_item.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -84,7 +85,12 @@ class RunsListViewState extends State<RunsListView> {
                   isSelectable: isSelectable,
                   onDeleteTap: () async {
                     widget.setLoading(true);
-                    await RunRepository.instance().deleteRun([runModel.id]);
+                    await RunRepository.instance().deleteRun([
+                      runModel.id,
+                    ]);
+                    await PositionRepository.instance().deleteRunRoute(
+                      runModel.id,
+                    );
                     widget.setLoading(false);
                   },
                 );
