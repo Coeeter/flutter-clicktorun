@@ -29,7 +29,7 @@ Flutter-ClickToRun is an application built using the Flutter framework with fire
 - A chats function where users can chat with each other
 
 ## Installation:
-If you want to try using the app, you can download it as a zip folder from [here](https://github.com/Coeeter/flutter-clicktorun/archive/refs/heads/master.zip) or clone it from https://github.com/Coeeter/flutter-clicktorun.git using android studio. When running the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file in the `android` folder
+If you want to try using the app, you can clone it from https://github.com/Coeeter/flutter-clicktorun.git using android studio. When running the app ensure you add the line below by using your own Google Maps API key to the `local.properties` file in the `android` folder
 ```properties
 GOOGLE_MAPS_API_KEY = YOUR_API_KEY
 ```
