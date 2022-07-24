@@ -264,18 +264,6 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
         ),
       ),
     ];
-    List<charts.Series<Position, num>> speedOverDistanceSeriesList = [
-      charts.Series(
-        id: 'Speed over distance',
-        data: positionList,
-        domainFn: (_, index) =>
-            distanceMeasureFunction(index, positionList, yUnits),
-        measureFn: (position, _) => position.speedInMetresPerSecond * 3.6,
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-          ClickToRunColors.primary,
-        ),
-      ),
-    ];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
@@ -309,26 +297,6 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
               seriesList: speedSeriesList,
               getXAxisValue: (position) {
                 return timeDomainFunction(position, xUnits).toString();
-              },
-              getYAxisValue: (position) {
-                return (position.speedInMetresPerSecond * 3.6)
-                    .toStringAsFixed(2);
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 40,
-            child: RunGraph(
-              cardTitle: "Speed over Distance",
-              yAxisLabel: "km/h",
-              xAxisLabel: yUnits,
-              seriesList: speedOverDistanceSeriesList,
-              getXAxisValue: (position) {
-                return distanceMeasureFunction(
-                  positionList.indexOf(position),
-                  positionList,
-                  yUnits,
-                ).toString();
               },
               getYAxisValue: (position) {
                 return (position.speedInMetresPerSecond * 3.6)
