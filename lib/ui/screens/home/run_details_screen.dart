@@ -234,11 +234,32 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
     String xUnits = "seconds";
     var timeList =
         widget.runModel.timeTakenInMilliseconds.toTimeString().split(':');
-    if (int.parse(timeList[1]) != 0 && int.parse(timeList[0]) >= 5) {
+    if (int.parse(timeList[1]) != 0 && int.parse(timeList[1]) >= 5) {
       xUnits = "minutes";
     }
     if (int.parse(timeList[0]) != 0 && int.parse(timeList[0]) >= 5) {
       xUnits = "hours";
+    }
+    if (xUnits != "seconds") {
+      int timeTaken;
+      for (int i = positionList.length - 1; i > 0; i--) {
+        var currentPosition = positionList[i];
+        var previousPosition = positionList[i - 1];
+        timeTaken = currentPosition.timeReachedPositionInMilliseconds -
+            widget.runModel.timeStartedInMilliseconds;
+        timeTaken = timeTaken ~/ 1000 ~/ 60;
+        int nextTimeTaken = previousPosition.timeReachedPositionInMilliseconds -
+            widget.runModel.timeStartedInMilliseconds;
+        nextTimeTaken = nextTimeTaken ~/ 1000 ~/ 60;
+        if (timeTaken == nextTimeTaken) {
+          if (previousPosition.speedInMetresPerSecond >
+              currentPosition.speedInMetresPerSecond) {
+            positionList.removeAt(i);
+            continue;
+          }
+          positionList.removeAt(i - 1);
+        }
+      }
     }
     String yUnits = widget.runModel.distanceRanInMetres > 1000 ? "km" : "m";
     List<charts.Series<Position, num>> distanceSeriesList = [
@@ -277,7 +298,7 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
               xAxisLabel: xUnits,
               seriesList: distanceSeriesList,
               getXAxisValue: (position) {
-                return timeDomainFunction(position, xUnits).toString();
+                return getTimeString(position);
               },
               getYAxisValue: (position) {
                 return distanceMeasureFunction(
@@ -288,15 +309,16 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
               },
             ),
           ),
+          const SizedBox(height: 10),
           SizedBox(
-            width: MediaQuery.of(context).size.width - 40,
+            width: MediaQuery.of(context).size.width - 50,
             child: RunGraph(
               cardTitle: "Speed over Time",
               yAxisLabel: "km/h",
               xAxisLabel: xUnits,
               seriesList: speedSeriesList,
               getXAxisValue: (position) {
-                return timeDomainFunction(position, xUnits).toString();
+                return getTimeString(position);
               },
               getYAxisValue: (position) {
                 return (position.speedInMetresPerSecond * 3.6)
@@ -309,8 +331,24 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
     );
   }
 
+  String getTimeString(Position position) {
+    var timeReached = position.timeReachedPositionInMilliseconds -
+        widget.runModel.timeStartedInMilliseconds;
+
+    var seconds = (timeReached ~/ 1000 % 60).toString() + "s";
+    var minutes = (timeReached ~/ 1000 ~/ 60 % 60).toString() + "min ";
+    var hours = (timeReached ~/ 1000 ~/ 60 ~/ 60).toString() + "hour ";
+    if (seconds == "0s") seconds = "";
+    if (minutes == "0min ") minutes = "";
+    if (hours == "0hour ") hours = "";
+    return hours + minutes + seconds;
+  }
+
   num distanceMeasureFunction(
-      int? index, List<Position> positionList, String yUnits) {
+    int? index,
+    List<Position> positionList,
+    String yUnits,
+  ) {
     if (index == null || index == 0) return 0;
     var remainingLatLng = positionList.reversed
         .toList()
@@ -325,14 +363,13 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
   num timeDomainFunction(Position position, String xUnits) {
     var timeReached = position.timeReachedPositionInMilliseconds -
         widget.runModel.timeStartedInMilliseconds;
-    int index = xUnits == "minutes"
-        ? 1
-        : xUnits == "hours"
-            ? 0
-            : 2;
-    return int.parse(
-      timeReached.toTimeString().split(':')[index],
-    );
+    if (xUnits == "minutes") {
+      return timeReached / 1000 / 60;
+    }
+    if (xUnits == "hours") {
+      return timeReached / 1000 / 60 / 60;
+    }
+    return timeReached / 1000;
   }
 
   Widget _getValue(

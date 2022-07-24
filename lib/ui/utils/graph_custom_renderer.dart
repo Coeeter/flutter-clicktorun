@@ -34,7 +34,7 @@ class CustomRenderer extends CircleSymbolRenderer {
       strokeColor: strokeColor,
       strokeWidthPx: strokeWidthPx,
     );
-    String text = "$yAxisValue $yAxisName\n$xAxisValue $xAxisName";
+    String text = "$yAxisValue $yAxisName\n$xAxisValue";
     canvas.drawRect(
       Rectangle(
         bounds.left - 5,
