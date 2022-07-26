@@ -31,18 +31,6 @@ class RunsListItem extends StatefulWidget {
 class RunsListItemState extends State<RunsListItem> {
   bool isSelected = false;
 
-  Color get _baseColor {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey[800]!
-        : Colors.grey[300]!;
-  }
-
-  Color get _highlightColor {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey[600]!
-        : Colors.grey[100]!;
-  }
-
   @override
   Widget build(BuildContext context) {
     GlobalKey globalKey = GlobalKey();
@@ -131,12 +119,12 @@ class RunsListItemState extends State<RunsListItem> {
             return child;
           }
           return Shimmer.fromColors(
-            highlightColor: _highlightColor,
-            baseColor: _baseColor,
+            highlightColor: ClickToRunColors.gethighlightColor(context),
+            baseColor: ClickToRunColors.getbaseColor(context),
             child: Container(
               height: (Screen.width - 20) / 2,
               width: Screen.width - 20,
-              color: _baseColor,
+              color: ClickToRunColors.getbaseColor(context),
             ),
           );
         },

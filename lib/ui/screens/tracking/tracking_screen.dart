@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:clicktorun_flutter/data/model/position_model.dart';
 import 'package:clicktorun_flutter/data/model/run_model.dart';

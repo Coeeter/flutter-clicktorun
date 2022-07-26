@@ -37,18 +37,6 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
   String? lightMode;
   String? darkMode;
 
-  Color get _baseColor {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey[800]!
-        : Colors.grey[300]!;
-  }
-
-  Color get _highlightColor {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey[600]!
-        : Colors.grey[100]!;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -187,7 +175,9 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
         Container(
           width: MediaQuery.of(context).size.width - 30,
           height: 2,
-          color: ClickToRunColors.primary,
+          decoration: const BoxDecoration(
+            gradient: ClickToRunColors.linearGradient,
+          ),
         ),
       ],
     );
@@ -210,8 +200,8 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
                 height: MediaQuery.of(context).size.width + 10,
                 color: Theme.of(context).colorScheme.surface,
               ),
-              baseColor: _baseColor,
-              highlightColor: _highlightColor,
+              baseColor: ClickToRunColors.getbaseColor(context),
+              highlightColor: ClickToRunColors.gethighlightColor(context),
             ),
             const SizedBox(width: 10),
             Shimmer.fromColors(
@@ -220,8 +210,8 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
                 height: MediaQuery.of(context).size.width + 10,
                 color: Theme.of(context).colorScheme.surface,
               ),
-              baseColor: _baseColor,
-              highlightColor: _highlightColor,
+              baseColor: ClickToRunColors.getbaseColor(context),
+              highlightColor: ClickToRunColors.gethighlightColor(context),
             ),
           ],
         ),
@@ -406,8 +396,8 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
           height: MediaQuery.of(context).size.width,
           color: Theme.of(context).colorScheme.surface,
         ),
-        baseColor: _baseColor,
-        highlightColor: _highlightColor,
+        baseColor: ClickToRunColors.getbaseColor(context),
+        highlightColor: ClickToRunColors.gethighlightColor(context),
       );
     }
 
@@ -440,18 +430,21 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
               ),
             },
           ),
-          Material(
-            elevation: 100,
-            color: Colors.transparent,
-            shape: const CircleBorder(),
-            clipBehavior: Clip.hardEdge,
-            child: IconButton(
-              onPressed: () => _setLatLngBounds(
-                runRoute,
-                animate: true,
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: Material(
+              elevation: 100,
+              color: Colors.transparent,
+              shape: const CircleBorder(),
+              clipBehavior: Clip.hardEdge,
+              child: IconButton(
+                onPressed: () => _setLatLngBounds(
+                  runRoute,
+                  animate: true,
+                ),
+                icon: const FaIcon(FontAwesomeIcons.route),
+                tooltip: "Show run route",
               ),
-              icon: const FaIcon(FontAwesomeIcons.route),
-              tooltip: "Show run route",
             ),
           )
         ],

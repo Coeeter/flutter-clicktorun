@@ -4,6 +4,7 @@ import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/home/widgets/runs_list_item.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
+import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -46,18 +47,6 @@ class RunsListViewState extends State<RunsListView> {
 
   void updateTitle() {
     widget.updateTitle(selectedCount);
-  }
-
-  Color get _baseColor {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey[800]!
-        : Colors.grey[300]!;
-  }
-
-  Color get _highlightColor {
-    return Theme.of(context).brightness == Brightness.dark
-        ? Colors.grey[600]!
-        : Colors.grey[100]!;
   }
 
   @override
@@ -116,8 +105,8 @@ class RunsListViewState extends State<RunsListView> {
         child: Column(
           children: [
             Shimmer.fromColors(
-              highlightColor: _highlightColor,
-              baseColor: _baseColor,
+              highlightColor: ClickToRunColors.gethighlightColor(context),
+              baseColor: ClickToRunColors.getbaseColor(context),
               child: Container(
                 width: Screen.width - 20,
                 height: (Screen.width - 20) / 2,
@@ -148,8 +137,8 @@ class RunsListViewState extends State<RunsListView> {
       child: Column(
         children: [
           Shimmer.fromColors(
-            highlightColor: _highlightColor,
-            baseColor: _baseColor,
+            highlightColor: ClickToRunColors.gethighlightColor(context),
+            baseColor: ClickToRunColors.getbaseColor(context),
             child: Container(
               height: 20,
               color: Colors.grey[300],
@@ -157,8 +146,8 @@ class RunsListViewState extends State<RunsListView> {
           ),
           const SizedBox(height: 5),
           Shimmer.fromColors(
-            highlightColor: _highlightColor,
-            baseColor: _baseColor,
+            highlightColor: ClickToRunColors.gethighlightColor(context),
+            baseColor: ClickToRunColors.getbaseColor(context),
             child: Container(
               height: 14,
               color: Colors.grey[300],

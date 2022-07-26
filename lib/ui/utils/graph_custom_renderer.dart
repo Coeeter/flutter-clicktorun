@@ -34,12 +34,13 @@ class CustomRenderer extends CircleSymbolRenderer {
       strokeColor: strokeColor,
       strokeWidthPx: strokeWidthPx,
     );
-    String text = "$yAxisValue $yAxisName\n$xAxisValue";
+    String text =
+        "$yAxisValue $yAxisName\n${xAxisValue == '' ? '0s' : xAxisValue}";
     canvas.drawRect(
       Rectangle(
         bounds.left - 5,
         bounds.top - 60,
-        bounds.width + text.length * 5,
+        bounds.width + text.length * 10,
         bounds.height + 40,
       ),
       fill: isNightMode ? Color.white : Color.black,
