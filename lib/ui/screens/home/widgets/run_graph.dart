@@ -68,11 +68,7 @@ class RunGraphState extends State<RunGraph> {
                     titleOutsideJustification:
                         charts.OutsideJustification.middleDrawArea,
                     titleStyleSpec: charts.TextStyleSpec(
-                      color: charts.ColorUtil.fromDartColor(
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
+                      color: labelColor,
                     ),
                   ),
                   charts.ChartTitle(
@@ -81,11 +77,7 @@ class RunGraphState extends State<RunGraph> {
                     titleOutsideJustification:
                         charts.OutsideJustification.middleDrawArea,
                     titleStyleSpec: charts.TextStyleSpec(
-                      color: charts.ColorUtil.fromDartColor(
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
+                      color: labelColor,
                     ),
                   ),
                 ],
