@@ -6,10 +6,12 @@ class CustomAppbar extends StatefulWidget implements PreferredSizeWidget {
   final Size preferredSize;
   String title;
   List<Widget>? actions;
+  double elevation;
 
   CustomAppbar({
     required this.title,
     this.actions,
+    this.elevation = 4,
     Key? key,
   })  : preferredSize = const Size.fromHeight(kToolbarHeight),
         super(key: key);
@@ -35,6 +37,7 @@ class CustomAppbarState extends State<CustomAppbar> {
         ),
       ),
       actions: widget.actions,
+      elevation: widget.elevation,
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:clicktorun_flutter/ui/screens/explore/explore_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/insights/insights_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/settings_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/home/your_runs_screen.dart';
@@ -27,39 +28,44 @@ class _ParentScreenState extends State<ParentScreen> {
           context,
           currentIndex,
         ),
+        elevation: _getTitle(currentIndex) == "Explore" ? 0 : 4,
       ),
       body: Container(
         color: Theme.of(context).colorScheme.surface,
         child: _getCurrentScreen(currentIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.personRunning),
-            label: "Your Runs",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: "Explore",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.insights),
-            label: "Insights",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
-        ],
-        currentIndex: currentIndex,
-        onTap: (int index) => setState(() {
-          currentIndex = index;
-        }),
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: true,
-        showUnselectedLabels: false,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-      ),
+      bottomNavigationBar: _getBottomNavigationBar(context),
+    );
+  }
+
+  Widget _getBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: const [
+        BottomNavigationBarItem(
+          icon: FaIcon(FontAwesomeIcons.personRunning),
+          label: "Your Runs",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.explore),
+          label: "Explore",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.insights),
+          label: "Insights",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: "Settings",
+        ),
+      ],
+      currentIndex: currentIndex,
+      onTap: (int index) => setState(() {
+        currentIndex = index;
+      }),
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: true,
+      showUnselectedLabels: false,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
     );
   }
 
@@ -69,7 +75,7 @@ class _ParentScreenState extends State<ParentScreen> {
           appbarKey: _appbarKey,
           refreshParent: () => setState(() {}),
         ),
-        null,
+        const ExploreScreen(),
         const InsightsScreen(),
         const SettingsScreen()
       ][index];

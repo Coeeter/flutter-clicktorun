@@ -36,7 +36,9 @@ class InsightsScreenState extends State<InsightsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _loadingWidget(context);
           }
-          if (snapshot.data == null) return _nothingToDisplay(context);
+          if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return _nothingToDisplay(context);
+          }
           return _mainBody(context, snapshot);
         },
       ),
@@ -96,14 +98,11 @@ class InsightsScreenState extends State<InsightsScreen> {
                 ),
                 _getTextValue(
                   context,
-                  (snapshot.data!.map((e) {
-                                return e.averageSpeed;
-                              }).reduce((value, element) {
-                                return value + element;
-                              }) /
-                              snapshot.data!.length)
-                          .toStringAsFixed(2) +
-                      " km/h",
+                  "${(snapshot.data!.map(
+                        (e) => e.averageSpeed,
+                      ).reduce(
+                        (v, e) => v + e,
+                      ) / snapshot.data!.length).toStringAsFixed(2)} km/h",
                   "Total average speed",
                 ),
               ],
