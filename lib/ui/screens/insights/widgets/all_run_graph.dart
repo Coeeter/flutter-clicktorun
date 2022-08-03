@@ -54,9 +54,10 @@ class AllRunGraphState extends State<AllRunGraph> {
           ? Colors.white
           : Colors.black,
     );
-    var data = widget.preview
-        ? widget.runList.sublist(widget.runList.length - 5)
-        : widget.runList;
+    var data = widget.runList;
+    if (widget.preview && widget.runList.length > 5) {
+      data = widget.runList.sublist(widget.runList.length - 5);
+    }
     switch (widget.graphType) {
       case GraphType.distance:
         {
@@ -175,11 +176,9 @@ class AllRunGraphState extends State<AllRunGraph> {
                         ),
                 ),
                 primaryMeasureAxis: charts.NumericAxisSpec(
-                  tickProviderSpec: widget.graphType == GraphType.timeTaken
-                      ? null
-                      : charts.StaticNumericTickProviderSpec(
-                          _getTickSpec(),
-                        ),
+                  tickProviderSpec: charts.StaticNumericTickProviderSpec(
+                    _getTickSpec(),
+                  ),
                   renderSpec: widget.preview
                       ? const charts.NoneRenderSpec()
                       : charts.GridlineRendererSpec(
@@ -262,7 +261,7 @@ class AllRunGraphState extends State<AllRunGraph> {
       secondCount++;
     }
     if (secondCount > minuteCount && secondCount > hourCount) return 's';
-    if (minuteCount > secondCount && minuteCount > hourCount) return 'min';
+    if (minuteCount >= secondCount && minuteCount >= hourCount) return 'min';
     return 'hour';
   }
 
