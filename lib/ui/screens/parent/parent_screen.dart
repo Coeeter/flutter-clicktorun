@@ -117,14 +117,7 @@ class _ParentScreenState extends State<ParentScreen> {
             ),
           ),
         ],
-        [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.message,
-            ),
-          ),
-        ],
+        [],
         [],
         []
       ][index];

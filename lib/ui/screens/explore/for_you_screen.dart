@@ -1,7 +1,10 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
+import 'package:clicktorun_flutter/data/model/user_model.dart';
+import 'package:clicktorun_flutter/data/repositories/follow_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/explore/post_item.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
+import 'package:clicktorun_flutter/ui/widgets/loading_container.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -13,31 +16,65 @@ class ForYouScreen extends StatefulWidget {
 }
 
 class _ForYouScreenState extends State<ForYouScreen> {
+  bool _isLoading = false;
+
+  void setisLoading(bool value) {
+    setState(() {
+      _isLoading = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<RunModel>>(
-      stream: RunRepository.instance().getPosts(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return _getLoadingWidget();
-        }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return _nothingToDisplay();
-        }
-        List<Widget> children = [];
-        children.addAll(
-          snapshot.data!.map((run) {
-            return PostItem(run: run);
-          }).toList(),
-        );
-        children.add(const SizedBox(height: 10));
-        return SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: children,
+    return Stack(
+      children: [
+        StreamBuilder<List<UserModel>>(
+          stream: FollowRepository.instance().getAllUserIsFollowing(),
+          builder: (context, followersList) {
+            if (followersList.connectionState == ConnectionState.waiting) {
+              return _getLoadingWidget();
+            }
+            return StreamBuilder<List<RunModel>>(
+              stream: RunRepository.instance().getPosts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return _getLoadingWidget();
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return _nothingToDisplay();
+                }
+                return SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      Column(
+                        children: snapshot.data!.map((run) {
+                          return PostItem(
+                            run: run,
+                            followersList: followersList.data ?? [],
+                            setIsLoading: setisLoading,
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 10)
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        Visibility(
+          visible: _isLoading,
+          child: Container(
+            alignment: Alignment.center,
+            color: Theme.of(context).colorScheme.surface,
+            child: const LoadingContainer(
+              overlayVisibility: false,
+            ),
           ),
-        );
-      },
+        )
+      ],
     );
   }
 

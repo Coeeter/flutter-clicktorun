@@ -1,4 +1,5 @@
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
+import 'package:clicktorun_flutter/data/repositories/follow_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
@@ -95,11 +96,17 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         );
         bool deleteImageResults =
             await UserRepository.instance().deleteUserImage();
+        bool deleteFollowingLinks =
+            await FollowRepository.instance().deleteAllLinks(
+          AuthRepository.instance().currentUser!.email!,
+        );
         bool deleteUserResults = await UserRepository.instance().deleteUser();
         setState(() {
           _isLoading = false;
         });
-        if (!deleteUserResults || !deleteImageResults) {
+        if (!deleteUserResults ||
+            !deleteImageResults ||
+            !deleteFollowingLinks) {
           return SnackbarUtils(context: context).createSnackbar(
             'Unknown error has occurred',
           );

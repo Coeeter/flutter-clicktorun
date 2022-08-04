@@ -19,11 +19,11 @@ class UserDaoImpl implements UserDao {
   final Reference _reference = FirebaseStorage.instance.ref();
 
   @override
-  Future<UserModel?> getUser() async {
+  Future<UserModel?> getUser(String? email) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> document = await _firestore
           .collection('users')
-          .doc(_firebaseAuth.currentUser!.email)
+          .doc(email ?? _firebaseAuth.currentUser!.email)
           .get();
       if (_docChecker(document)) return null;
       return Future.value(UserModel.fromDocument(

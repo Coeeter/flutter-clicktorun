@@ -1,6 +1,7 @@
 import 'package:clicktorun_flutter/data/model/run_model.dart';
 import 'package:clicktorun_flutter/data/model/user_model.dart';
 import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
+import 'package:clicktorun_flutter/data/repositories/follow_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
@@ -12,8 +13,12 @@ import 'package:shimmer/shimmer.dart';
 
 class PostItem extends StatefulWidget {
   final RunModel run;
+  final List<UserModel> followersList;
+  final void Function(bool) setIsLoading;
   const PostItem({
     required this.run,
+    required this.followersList,
+    required this.setIsLoading,
     Key? key,
   }) : super(key: key);
 
@@ -86,6 +91,11 @@ class _PostItemState extends State<PostItem> {
   }
 
   Widget _getHeader(RunModel runModel) {
+    bool isFollowing = widget.followersList
+        .map((e) => e.email)
+        .toList()
+        .contains(runModel.email);
+
     return StreamBuilder<UserModel?>(
       stream: UserRepository.instance().getUserStream(runModel.email),
       builder: (context, snapshot) {
@@ -163,11 +173,23 @@ class _PostItemState extends State<PostItem> {
                     AuthRepository.instance().currentUser!.email,
                 child: Material(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () async {
+                      widget.setIsLoading(true);
+                      isFollowing
+                          ? await FollowRepository.instance().deleteFollow(
+                              runModel.email,
+                              AuthRepository.instance().currentUser!.email!,
+                            )
+                          : await FollowRepository.instance().insertFollowLink(
+                              runModel.email,
+                              AuthRepository.instance().currentUser!.email!,
+                            );
+                      widget.setIsLoading(false);
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(5),
                       child: Text(
-                        'Follow',
+                        isFollowing ? "Unfollow" : "Follow",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: ClickToRunColors.primary,
                               fontFamily: 'Roboto',

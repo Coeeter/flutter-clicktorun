@@ -11,8 +11,8 @@ class UserRepository {
 
   final UserDao _userDao = UserDaoImpl.instance();
 
-  Future<UserModel?> getUser() {
-    return _userDao.getUser();
+  Future<UserModel?> getUser([String? email]) {
+    return _userDao.getUser(email);
   }
 
   Stream<UserModel?> getUserStream([String? email]) {

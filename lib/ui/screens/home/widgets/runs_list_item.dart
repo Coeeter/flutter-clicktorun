@@ -102,7 +102,7 @@ class RunsListItemState extends State<RunsListItem> {
             isShared? widget.onRemoveShareTap() : widget.onShareTap();
           },
           icon: isShared? Icons.archive : Icons.share,
-          label: isShared? 'Hide run' : 'Save run',
+          label: isShared? 'Hide run' : 'Share run',
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
         )
