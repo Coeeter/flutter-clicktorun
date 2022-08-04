@@ -10,12 +10,12 @@ class FollowRepository {
 
   final FollowDao _followDao = FollowDaoImpl.instance();
 
-  Stream<List<UserModel>> getFollowers() {
-    return _followDao.getAllFollowers();
+  Stream<List<UserModel>> getFollowers([String? email]) {
+    return _followDao.getAllFollowers(email);
   }
 
-  Stream<List<UserModel>> getAllUserIsFollowing() {
-    return _followDao.getAllUserIsFollowing();
+  Stream<List<UserModel>> getAllUserIsFollowing([String? email]) {
+    return _followDao.getAllUserIsFollowing(email);
   }
 
   Future<bool> insertFollowLink(

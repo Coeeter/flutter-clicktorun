@@ -17,12 +17,12 @@ class FollowDaoImpl implements FollowDao {
   final String collectionPath = 'followlinks';
 
   @override
-  Stream<List<UserModel>> getAllFollowers() async* {
+  Stream<List<UserModel>> getAllFollowers([String? email]) async* {
     var followListStream = _firestore
         .collection(collectionPath)
         .where(
           'userBeingFollowedEmail',
-          isEqualTo: _firebaseAuth.currentUser!.email!,
+          isEqualTo: email ?? _firebaseAuth.currentUser!.email!,
         )
         .snapshots()
         .map(
@@ -44,12 +44,12 @@ class FollowDaoImpl implements FollowDao {
   }
 
   @override
-  Stream<List<UserModel>> getAllUserIsFollowing() async* {
+  Stream<List<UserModel>> getAllUserIsFollowing([String? email]) async* {
     var followListStream = _firestore
         .collection(collectionPath)
         .where(
           'userFollowingEmail',
-          isEqualTo: _firebaseAuth.currentUser!.email!,
+          isEqualTo: email ?? _firebaseAuth.currentUser!.email!,
         )
         .snapshots()
         .map(

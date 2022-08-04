@@ -20,4 +20,8 @@ class PositionRepository {
   Future<bool> deleteRunRoute(String runId) {
     return _positionDao.deleteRunRoute(runId);
   }
+
+  Future<bool> deleteAllRoute() {
+    return _positionDao.deleteAllRoutes();
+  }
 }

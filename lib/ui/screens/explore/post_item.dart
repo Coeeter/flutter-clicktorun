@@ -6,6 +6,7 @@ import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/home/run_details_screen.dart';
+import 'package:clicktorun_flutter/ui/screens/settings/profile_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:clicktorun_flutter/ui/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,11 @@ import 'package:shimmer/shimmer.dart';
 
 class PostItem extends StatefulWidget {
   final RunModel run;
-  final List<UserModel> followersList;
+  final List<UserModel>? followersList;
   final void Function(bool) setIsLoading;
   const PostItem({
     required this.run,
-    required this.followersList,
+    this.followersList,
     required this.setIsLoading,
     Key? key,
   }) : super(key: key);
@@ -62,7 +63,7 @@ class _PostItemState extends State<PostItem> {
           elevation: 10,
           child: Column(
             children: [
-              _getHeader(widget.run),
+              if (widget.followersList != null) _getHeader(widget.run),
               SizedBox(
                 width: width,
                 height: width / 2,
@@ -91,7 +92,7 @@ class _PostItemState extends State<PostItem> {
   }
 
   Widget _getHeader(RunModel runModel) {
-    bool isFollowing = widget.followersList
+    bool isFollowing = widget.followersList!
         .map((e) => e.email)
         .toList()
         .contains(runModel.email);
@@ -142,31 +143,42 @@ class _PostItemState extends State<PostItem> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: ProfileImage(
-                      width: 32,
-                      colorScheme: Theme.of(context).colorScheme.copyWith(
-                            surface:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? const Color(0xFF303030)
-                                    : Colors.white,
-                          ),
-                      snapshot: snapshot,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ProfileScreen(
+                        email: snapshot.data!.email,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    snapshot.data!.username,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontFamily: 'Roboto'),
-                  ),
-                ],
+                  );
+                },
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: ProfileImage(
+                        width: 32,
+                        colorScheme: Theme.of(context).colorScheme.copyWith(
+                              surface: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? const Color(0xFF303030)
+                                  : Colors.white,
+                            ),
+                        snapshot: snapshot,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      snapshot.data!.username,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(fontFamily: 'Roboto'),
+                    ),
+                  ],
+                ),
               ),
               Visibility(
                 visible: snapshot.data!.email !=

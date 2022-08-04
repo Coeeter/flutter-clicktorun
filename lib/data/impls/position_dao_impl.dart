@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:clicktorun_flutter/data/daos/position_dao.dart';
 import 'package:clicktorun_flutter/data/model/position_model.dart';
+import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PositionDaoImpl implements PositionDao {
@@ -82,6 +83,31 @@ class PositionDaoImpl implements PositionDao {
           .get();
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         batch.delete(doc.reference);
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> deleteAllRoutes() async {
+    try {
+      WriteBatch batch = _firestore.batch();
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+          .collection('runs')
+          .where(
+            'email',
+            isEqualTo: AuthRepository.instance().currentUser!.email!,
+          )
+          .get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        var routes = await doc.reference.collection('routes').get();
+        for (var routeDoc in routes.docs) {
+          batch.delete(routeDoc.reference);
+        }
       }
       await batch.commit();
       return true;

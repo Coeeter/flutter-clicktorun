@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:clicktorun_flutter/data/daos/user_dao.dart';
 import 'package:clicktorun_flutter/data/model/user_model.dart';
+import 'package:clicktorun_flutter/data/repositories/position_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,7 +103,10 @@ class UserDaoImpl implements UserDao {
   @override
   Future<bool> deleteUser() async {
     try {
-      RunRepository.instance().deleteAllRuns(_firebaseAuth.currentUser!.email!);
+      await PositionRepository.instance().deleteAllRoute();
+      await RunRepository.instance().deleteAllRuns(
+        _firebaseAuth.currentUser!.email!,
+      );
       await _firestore
           .collection('users')
           .doc(_firebaseAuth.currentUser!.email)

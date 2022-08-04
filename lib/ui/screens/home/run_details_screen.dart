@@ -61,7 +61,7 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
         title: isOtherAccount ? '${widget.username}\'s run' : 'Details of run',
         actions: [
           Visibility(
-            visible: widget.runModel.isShared,
+            visible: widget.runModel.isShared && !isOtherAccount,
             child: IconButton(
               onPressed: () async {
                 await RunRepository.instance().shareRun(
@@ -79,7 +79,7 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
             ),
           ),
           Visibility(
-            visible: !widget.runModel.isShared,
+            visible: !widget.runModel.isShared && !isOtherAccount,
             child: IconButton(
               onPressed: () async {
                 await RunRepository.instance().shareRun(

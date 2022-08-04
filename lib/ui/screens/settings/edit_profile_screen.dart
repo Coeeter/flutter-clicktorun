@@ -79,7 +79,7 @@ class _EditUserDetailsScreenState extends State<EditUserDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = Screen.width * 0.6;
+    double width = MediaQuery.of(context).size.width / 2;
     ColorScheme colorScheme = Theme.of(context).colorScheme.copyWith(
           surface: Theme.of(context).brightness == Brightness.dark
               ? const Color(0xFF303030)

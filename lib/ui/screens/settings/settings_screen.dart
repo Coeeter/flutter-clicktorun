@@ -4,6 +4,7 @@ import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/auth/login_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/delete_account_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/edit_profile_screen.dart';
+import 'package:clicktorun_flutter/ui/screens/settings/profile_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/widgets/profile_image.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +117,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Material(
       child: InkWell(
-        onTap: () => {},
+        onTap: () {
+          if (userSnapshot.connectionState == ConnectionState.waiting) return;
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ProfileScreen(
+                email: userSnapshot.data!.email,
+              ),
+            ),
+          );
+        },
         child: Ink(
           decoration: BoxDecoration(color: colorScheme.background),
           child: Container(
