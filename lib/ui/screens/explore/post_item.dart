@@ -36,7 +36,11 @@ class _PostItemState extends State<PostItem> {
     String postedOn =
         "$postedOnTime - ${postedDate.day}/${postedDate.month}/${postedDate.year}";
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(
+        top: 10,
+        left: 10,
+        right: 10,
+      ),
       child: GestureDetector(
         onTap: () {
           if (username == null) return;

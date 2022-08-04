@@ -24,12 +24,17 @@ class _ForYouScreenState extends State<ForYouScreen> {
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return _nothingToDisplay();
         }
+        List<Widget> children = [];
+        children.addAll(
+          snapshot.data!.map((run) {
+            return PostItem(run: run);
+          }).toList(),
+        );
+        children.add(const SizedBox(height: 10));
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
-            children: snapshot.data!.map((run) {
-              return PostItem(run: run);
-            }).toList(),
+            children: children,
           ),
         );
       },
