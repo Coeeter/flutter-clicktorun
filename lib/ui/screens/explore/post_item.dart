@@ -14,12 +14,14 @@ import 'package:shimmer/shimmer.dart';
 
 class PostItem extends StatefulWidget {
   final RunModel run;
-  final List<UserModel>? followersList;
   final void Function(bool) setIsLoading;
+  final String? username;
+  final List<UserModel>? followersList;
   const PostItem({
     required this.run,
-    this.followersList,
     required this.setIsLoading,
+    this.followersList,
+    this.username,
     Key? key,
   }) : super(key: key);
 
@@ -32,6 +34,7 @@ class _PostItemState extends State<PostItem> {
 
   @override
   Widget build(BuildContext context) {
+    username = widget.username;
     double width = MediaQuery.of(context).size.width - 20;
     DateTime postedDate = DateTime.fromMillisecondsSinceEpoch(
         widget.run.timeStartedInMilliseconds);

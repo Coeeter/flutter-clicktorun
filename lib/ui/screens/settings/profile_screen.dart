@@ -5,6 +5,7 @@ import 'package:clicktorun_flutter/data/repositories/follow_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/user_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/explore/post_item.dart';
+import 'package:clicktorun_flutter/ui/screens/home/run_details_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/edit_profile_screen.dart';
 import 'package:clicktorun_flutter/ui/screens/settings/following_list_screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
@@ -122,14 +123,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         }
         return Column(
-          children: posts
-              .map(
-                (e) => PostItem(
-                  run: e,
-                  setIsLoading: (_) {},
-                ),
-              )
-              .toList(),
+          children: posts.map((e) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => RunDetailsScreen(
+                      runModel: e,
+                      username: _user!.username,
+                    ),
+                  ),
+                );
+              },
+              child: PostItem(
+                run: e,
+                username: _user!.username,
+                setIsLoading: (_) {},
+              ),
+            );
+          }).toList(),
         );
       },
     );
