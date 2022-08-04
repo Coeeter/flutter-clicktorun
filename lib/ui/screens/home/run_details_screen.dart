@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:clicktorun_flutter/data/model/position_model.dart';
 import 'package:clicktorun_flutter/data/model/run_model.dart';
+import 'package:clicktorun_flutter/data/repositories/auth_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/position_repository.dart';
 import 'package:clicktorun_flutter/data/repositories/run_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/home/widgets/run_graph.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
 import 'package:clicktorun_flutter/ui/utils/extensions.dart';
+import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:clicktorun_flutter/ui/widgets/appbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -20,10 +22,10 @@ import 'package:uuid/uuid.dart';
 
 class RunDetailsScreen extends StatefulWidget {
   final RunModel runModel;
-  final String imageUrl;
+  final String? username;
   const RunDetailsScreen({
     required this.runModel,
-    required this.imageUrl,
+    this.username,
     Key? key,
   }) : super(key: key);
 
@@ -52,24 +54,65 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isOtherAccount =
+        AuthRepository.instance().currentUser!.email! != widget.runModel.email;
     return Scaffold(
       appBar: CustomAppbar(
-        title: 'Details of run',
+        title: isOtherAccount ? '${widget.username}\'s run' : 'Details of run',
         actions: [
-          IconButton(
-            onPressed: () async {
-              setState(() {
-                _isLoading = true;
-              });
-              await RunRepository.instance().deleteRun([
-                widget.runModel.id,
-              ]);
-              await PositionRepository.instance().deleteRunRoute(
-                widget.runModel.id,
-              );
-              Navigator.pop(context);
-            },
-            icon: const Icon(Icons.delete),
+          Visibility(
+            visible: widget.runModel.isShared,
+            child: IconButton(
+              onPressed: () async {
+                await RunRepository.instance().shareRun(
+                  widget.runModel.id,
+                  false,
+                );
+                setState(() {
+                  widget.runModel.isShared = false;
+                });
+                SnackbarUtils(context: context).createSnackbar(
+                  'Hided run successfully',
+                );
+              },
+              icon: const Icon(Icons.archive),
+            ),
+          ),
+          Visibility(
+            visible: !widget.runModel.isShared,
+            child: IconButton(
+              onPressed: () async {
+                await RunRepository.instance().shareRun(
+                  widget.runModel.id,
+                  true,
+                );
+                setState(() {
+                  widget.runModel.isShared = true;
+                });
+                SnackbarUtils(context: context).createSnackbar(
+                  'Shared run successfully',
+                );
+              },
+              icon: const Icon(Icons.share),
+            ),
+          ),
+          Visibility(
+            visible: !isOtherAccount,
+            child: IconButton(
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                await RunRepository.instance().deleteRun([
+                  widget.runModel.id,
+                ]);
+                await PositionRepository.instance().deleteRunRoute(
+                  widget.runModel.id,
+                );
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.delete),
+            ),
           ),
         ],
       ),
@@ -92,7 +135,20 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
     );
   }
 
+  String _formatTime(int time) {
+    if (time < 10) return "0$time";
+    return time.toString();
+  }
+
   Widget _getMainBody(BuildContext context) {
+    DateTime postedDate = DateTime.fromMillisecondsSinceEpoch(
+        widget.runModel.timeStartedInMilliseconds);
+    String units = 'am';
+    if (postedDate.hour > 12) units = 'pm';
+    String postedOnTime =
+        "${_formatTime(postedDate.hour)}:${_formatTime(postedDate.minute)}:${_formatTime(postedDate.second)}$units";
+    String postedOn =
+        "${postedDate.day}/${postedDate.month}/${postedDate.year}";
     return FutureBuilder<List<List<Position>>?>(
       future: PositionRepository.instance().getRunRoute(widget.runModel.id),
       builder: (context, snapshot) {
@@ -129,6 +185,18 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
                       context,
                       'Average speed',
                       "${widget.runModel.averageSpeed.toStringAsFixed(2)} km/h",
+                    ),
+                    const SizedBox(height: 10),
+                    _getValue(
+                      context,
+                      'Date of run',
+                      postedOn,
+                    ),
+                    const SizedBox(height: 10),
+                    _getValue(
+                      context,
+                      'Time run started',
+                      postedOnTime,
                     ),
                   ],
                 ),

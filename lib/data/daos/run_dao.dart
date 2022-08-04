@@ -4,6 +4,7 @@ import 'package:clicktorun_flutter/data/model/run_model.dart';
 
 abstract class RunDao {
   Stream<List<RunModel>> getRunList(String email);
+  Stream<List<RunModel>> getPosts();
   Future<bool> insertRun(
     RunModel runModel,
     Uint8List lightModeImage,

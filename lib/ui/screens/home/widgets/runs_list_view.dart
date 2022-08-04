@@ -5,6 +5,7 @@ import 'package:clicktorun_flutter/data/repositories/storage_repository.dart';
 import 'package:clicktorun_flutter/ui/screens/home/widgets/runs_list_item.dart';
 import 'package:clicktorun_flutter/ui/utils/Screen.dart';
 import 'package:clicktorun_flutter/ui/utils/colors.dart';
+import 'package:clicktorun_flutter/ui/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -81,6 +82,18 @@ class RunsListViewState extends State<RunsListView> {
                       runModel.id,
                     );
                     widget.setLoading(false);
+                  },
+                  onShareTap: () async {
+                    await RunRepository.instance().shareRun(runModel.id, true);
+                    SnackbarUtils(context: context).createSnackbar(
+                      'Shared run successfully',
+                    );
+                  },
+                  onRemoveShareTap: () async {
+                    await RunRepository.instance().shareRun(runModel.id, false);
+                    SnackbarUtils(context: context).createSnackbar(
+                      'Hided run successfully',
+                    );
                   },
                 );
               },

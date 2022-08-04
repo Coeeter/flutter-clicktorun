@@ -15,6 +15,10 @@ class RunRepository {
     return _runDao.getRunList(email);
   }
 
+  Stream<List<RunModel>> getPosts() {
+    return _runDao.getPosts();
+  }
+
   Future<bool> insertRun(
     RunModel runModel,
     Uint8List lightModeImage,
@@ -25,6 +29,10 @@ class RunRepository {
 
   Future<bool> updateRun(String id, Map<String, dynamic> updateValues) {
     return _runDao.updateRun(id, updateValues);
+  }
+
+  Future<bool> shareRun(String id, bool isShared) {
+    return updateRun(id, {'shared': isShared});
   }
 
   Future<bool> deleteRun(List<String> idList) {

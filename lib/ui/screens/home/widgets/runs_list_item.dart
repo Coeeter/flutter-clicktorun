@@ -14,6 +14,8 @@ class RunsListItem extends StatefulWidget {
   final bool isSelectable;
   final String imageUrl;
   final void Function() onDeleteTap;
+  final void Function() onShareTap;
+  final void Function() onRemoveShareTap;
 
   const RunsListItem({
     required Key? key,
@@ -22,6 +24,8 @@ class RunsListItem extends StatefulWidget {
     required this.imageUrl,
     required this.isSelectable,
     required this.onDeleteTap,
+    required this.onShareTap,
+    required this.onRemoveShareTap,
   }) : super(key: key);
 
   @override
@@ -45,7 +49,6 @@ class RunsListItemState extends State<RunsListItem> {
                 builder: (context) {
                   return RunDetailsScreen(
                     runModel: widget.runModel,
-                    imageUrl: widget.imageUrl,
                   );
                 },
               ),
@@ -59,6 +62,9 @@ class RunsListItemState extends State<RunsListItem> {
         },
         child: Slidable(
           key: ValueKey(widget.runModel.id),
+          startActionPane: widget.isSelectable
+              ? null
+              : _getShareActionPane(widget.runModel, widget.runModel.isShared),
           endActionPane:
               widget.isSelectable ? null : _getActionPane(widget.runModel),
           child: IntrinsicHeight(
@@ -84,6 +90,23 @@ class RunsListItemState extends State<RunsListItem> {
           ),
         ),
       ),
+    );
+  }
+
+  ActionPane _getShareActionPane(RunModel runModel, bool isShared) {
+    return ActionPane(
+      motion: const ScrollMotion(),
+      children: [
+        SlidableAction(
+          onPressed: (_) {
+            isShared? widget.onRemoveShareTap() : widget.onShareTap();
+          },
+          icon: isShared? Icons.archive : Icons.share,
+          label: isShared? 'Hide run' : 'Save run',
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+        )
+      ],
     );
   }
 

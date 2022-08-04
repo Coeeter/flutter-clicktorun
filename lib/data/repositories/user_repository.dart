@@ -15,8 +15,8 @@ class UserRepository {
     return _userDao.getUser();
   }
 
-  Stream<UserModel?> getUserStream() {
-    return _userDao.getUserStream();
+  Stream<UserModel?> getUserStream([String? email]) {
+    return _userDao.getUserStream(email);
   }
 
   Future<bool> insertUser(UserModel user) {

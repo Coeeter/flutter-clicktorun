@@ -4,6 +4,7 @@ class RunModel {
   String id, email, darkModeImage, lightModeImage;
   double distanceRanInMetres, averageSpeed;
   int timeStartedInMilliseconds, timeTakenInMilliseconds;
+  bool isShared;
 
   RunModel({
     required this.id,
@@ -14,6 +15,7 @@ class RunModel {
     required this.timeTakenInMilliseconds,
     required this.distanceRanInMetres,
     required this.averageSpeed,
+    this.isShared = false,
   });
 
   RunModel.fromMap(
@@ -27,5 +29,8 @@ class RunModel {
           timeTakenInMilliseconds: document["timeTaken"],
           distanceRanInMetres: document["distanceRan"],
           averageSpeed: document["averageSpeed"],
+          isShared: document.data()!.containsKey('shared')
+              ? document["shared"]
+              : false,
         );
 }

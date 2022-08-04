@@ -37,10 +37,10 @@ class UserDaoImpl implements UserDao {
   }
 
   @override
-  Stream<UserModel?> getUserStream() {
+  Stream<UserModel?> getUserStream(String? email) {
     return _firestore
         .collection('users')
-        .doc(_firebaseAuth.currentUser!.email)
+        .doc(email ?? _firebaseAuth.currentUser!.email)
         .snapshots()
         .asyncMap(
       (doc) async {

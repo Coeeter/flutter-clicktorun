@@ -21,7 +21,21 @@ class RunDaoImpl implements RunDao {
     return _firestore
         .collection('runs')
         .where('email', isEqualTo: email)
-        .orderBy('timeStarted')
+        .orderBy('timeStarted', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((document) => RunModel.fromMap(document))
+              .toList(),
+        );
+  }
+
+  @override
+  Stream<List<RunModel>> getPosts() {
+    return _firestore
+        .collection('runs')
+        .where('shared', isEqualTo: true)
+        .orderBy('timeStarted', descending: true)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
