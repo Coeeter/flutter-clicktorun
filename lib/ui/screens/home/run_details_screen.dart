@@ -144,9 +144,13 @@ class _RunDetailsScreenState extends State<RunDetailsScreen> {
     DateTime postedDate = DateTime.fromMillisecondsSinceEpoch(
         widget.runModel.timeStartedInMilliseconds);
     String units = 'am';
-    if (postedDate.hour > 12) units = 'pm';
+    int hour = postedDate.hour;
+    if (hour >= 12) {
+      units = 'pm';
+      hour = hour - 12;
+    }
     String postedOnTime =
-        "${_formatTime(postedDate.hour)}:${_formatTime(postedDate.minute)}:${_formatTime(postedDate.second)}$units";
+        "${_formatTime(hour)}:${_formatTime(postedDate.minute)}:${_formatTime(postedDate.second)}$units";
     String postedOn =
         "${postedDate.day}/${postedDate.month}/${postedDate.year}";
     return FutureBuilder<List<List<Position>>?>(
